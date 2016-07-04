@@ -10,7 +10,7 @@
                 listener="#{relationshipController.onRelationshipPopupClose}" oncomplete="hierarchiesResizeAll();" />
 
             <f:facet name="header">
-                <h:outputText value="#{empty relationshipController.editedRelationshipView.id ? 'Add' : 'Edit'} relationship to #{relationshipController.editedRelationshipView.sourceSlotName}" />
+                <h:outputText value="#{relationshipController.editExistingRelationship ? 'Edit' : 'Add'} relationship to #{relationshipController.editedRelationshipView.sourceSlotName}" />
             </f:facet>
 
             <p:panelGrid id="grid" style="text-align: left" styleClass="dialog-grid-panel noBorders">
