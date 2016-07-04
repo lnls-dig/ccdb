@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>confmgr</artifactId>
-    <version>${app.version}-SNAPSHOT</version>
+    <version>${app.version}</version>
     <packaging>war</packaging>
     <name>confmgr</name>
 
