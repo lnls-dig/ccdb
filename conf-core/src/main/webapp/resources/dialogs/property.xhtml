@@ -105,9 +105,9 @@
                             <h:outputLabel value="Batch:" for="batchCreation" />
                         </p:column>
                         <p:column>
-                            <h:selectBooleanCheckbox id="batchCreation" tabindex="6" value="#{propertyManager.dialogProperty.batchCreation}" >
+                            <p:selectBooleanCheckbox id="batchCreation" tabindex="6" value="#{propertyManager.dialogProperty.batchCreation}" >
                                 <p:ajax update=":#{formId}:startSpinner :#{formId}:endSpinner :#{formId}:zeroesSpinner" />
-                            </h:selectBooleanCheckbox>
+                            </p:selectBooleanCheckbox>
                         </p:column>
                     </p:row>
                     <p:row rendered="#{batchCreation}">
