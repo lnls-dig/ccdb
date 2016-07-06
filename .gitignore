@@ -175,4 +175,7 @@ target
 *.zip
 *.pdf
 *.ldb
+
 # Local files: VV
+.sonar/
+sonar-generated.properties
