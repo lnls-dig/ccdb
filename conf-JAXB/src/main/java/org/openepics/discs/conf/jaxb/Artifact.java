@@ -33,6 +33,27 @@ public class Artifact {
     private boolean isURI;
     private String description;
     private String uri;
+    private String key;
+
+    /** Constructs empty Artifact. */
+    public Artifact() {
+    }
+
+    /**
+     * Constructs a new Artifact from conf.ent.Artifact.
+     *
+     * @param entityArtifact
+     */
+    public Artifact(org.openepics.discs.conf.ent.Artifact entityArtifact) {
+        this.name = entityArtifact.getName();
+        this.description = entityArtifact.getDescription();
+        this.isURI = !entityArtifact.isInternal();
+        if (entityArtifact.isInternal()) {
+            this.key = entityArtifact.getId().toString();
+        } else {
+            this.uri = entityArtifact.getUri();
+        }
+    }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -45,4 +66,7 @@ public class Artifact {
 
     public String getUri() { return uri; }
     public void setUri(String uri) { this.uri = uri; }
+
+    public String getKey() { return key; }
+    public void setKey(String key) { this.key = key; }
 }

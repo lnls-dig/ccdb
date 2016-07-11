@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.openepics.discs.conf.ejb.ComptypeEJB;
 import org.openepics.discs.conf.ent.ComponentType;
+import org.openepics.discs.conf.jaxb.Artifact;
 import org.openepics.discs.conf.jaxb.DeviceType;
 import org.openepics.discs.conf.jaxrs.DeviceTypeResource;
 
@@ -59,7 +60,12 @@ public class DeviceTypeResourceImpl implements DeviceTypeResource {
             final DeviceType deviceType = new DeviceType();
             deviceType.setName(componentType.getName());
             deviceType.setDescription(componentType.getDescription());
+            deviceType.setArtifacts(getArtifacts(componentType.getEntityArtifactList()));
             return deviceType;
         }
     }
+
+    private static List<Artifact> getArtifacts(List<org.openepics.discs.conf.ent.Artifact> entityArtifactList) {
+        return entityArtifactList.stream().map(Artifact::new).collect(Collectors.toList());
+     }
 }

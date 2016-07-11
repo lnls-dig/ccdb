@@ -40,6 +40,7 @@ import org.openepics.discs.conf.ent.Slot;
 import org.openepics.discs.conf.ent.SlotPair;
 import org.openepics.discs.conf.ent.SlotPropertyValue;
 import org.openepics.discs.conf.ent.SlotRelationName;
+import org.openepics.discs.conf.jaxb.Artifact;
 import org.openepics.discs.conf.jaxb.InstallationSlot;
 import org.openepics.discs.conf.jaxb.PropertyKind;
 import org.openepics.discs.conf.jaxb.PropertyValue;
@@ -50,6 +51,7 @@ import org.openepics.discs.conf.util.UnhandledCaseException;
  * An implementation of the InstallationSlotResource interface.
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
 public class InstallationSlotResourceImpl implements InstallationSlotResource {
     @Inject private SlotEJB slotEJB;
@@ -108,6 +110,7 @@ public class InstallationSlotResourceImpl implements InstallationSlotResource {
         installationSlot.setName(slot.getName());
         installationSlot.setDescription(slot.getDescription());
         installationSlot.setDeviceType(DeviceTypeResourceImpl.getDeviceType(slot.getComponentType()));
+        installationSlot.setArtifacts(getArtifacts(slot.getEntityArtifactList()));
 
         installationSlot.setParents(
                 getRelatedSlots(slot.getPairsInWhichThisSlotIsAChildList().stream(),
@@ -185,4 +188,8 @@ public class InstallationSlotResourceImpl implements InstallationSlotResource {
         }
         return propertyValue;
     }
+
+    private static List<Artifact> getArtifacts(List<org.openepics.discs.conf.ent.Artifact> entityArtifactList) {
+        return entityArtifactList.stream().map(Artifact::new).collect(Collectors.toList());
+     }
 }

@@ -15,6 +15,10 @@
 	</parent>
 
 	<dependencies>
+        <dependency>
+            <groupId>org.openepics.discs</groupId>
+            <artifactId>ccdb-model</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-web-api</artifactId>

@@ -27,6 +27,7 @@ import javax.ws.rs.core.Application;
  * This represents the JAX-RS application which hosts all REST resources of the CCDB.
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
 @ApplicationPath("/")
 public class CcdbRestService extends Application {
@@ -37,7 +38,7 @@ public class CcdbRestService extends Application {
 
     private Set<Class<?>> getRestResourceClasses() {  // NOSONAR generic wildcard types part of the framework
         return new java.util.HashSet<Class<?>>(Arrays.asList(DeviceTypeResourceImpl.class,
-                InstallationSlotNameResourceImpl.class, InstallationSlotResourceImpl.class));
+                InstallationSlotNameResourceImpl.class, InstallationSlotResourceImpl.class, DeviceResourceImpl.class,
+                DownloadAttachmentResourceImpl.class));
     }
-
 }

@@ -17,11 +17,14 @@
  */
 package org.openepics.discs.conf.jaxb;
 
-import java.util.Date;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * This is data transfer object representing a CCDB device type for JSON and XML serialization.
@@ -30,9 +33,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "deviceType")
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({Artifact.class})
 public class DeviceType {
     private String name;
     private String description;
+
+    @XmlElementWrapper(name = "artifacts")
+    @XmlAnyElement(lax = true)
+    private List<Artifact> artifacts;
+
 
     public DeviceType() { }
 
@@ -41,4 +50,7 @@ public class DeviceType {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
+    public List<Artifact> getArtifacts() { return artifacts; }
+    public void setArtifacts(List<Artifact> artifacts) { this.artifacts = artifacts; }
 }
