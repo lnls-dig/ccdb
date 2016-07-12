@@ -44,17 +44,17 @@ public class DownloadAttachmentResourceImpl implements DownloadAttachmentResourc
     @Inject private ArtifactEJB artifactEJB;
 
     @Override
-    public Response getFile(String id) {
-        long Id = 0;
+    public Response getFile(String key) {
+        long id = -1;
         ResponseBuilder response;
 
         try {
-            Id = Long.parseLong(id);
-            final Artifact artifact = artifactEJB.findArtifactById(Id);
+            id = Long.parseLong(key);
+            final Artifact artifact = artifactEJB.findById(Long.valueOf(id));
             if (artifact == null) {
                 response = Response.status(Status.NOT_FOUND);
                 response.type(MediaType.TEXT_HTML);
-                response.entity("Attachment with Id " + Id + " not found.");
+                response.entity("Attachment with Id " + id + " not found.");
             } else {
                 InputStream stream = blobStore.retreiveFile(artifact.getUri());
                 response = Response.ok(stream);
@@ -71,11 +71,11 @@ public class DownloadAttachmentResourceImpl implements DownloadAttachmentResourc
         } catch (FileNotFoundException e) {
             response = Response.status(Status.NOT_FOUND);
             response.type(MediaType.TEXT_HTML);
-            response.entity("Attachment with Id " + Id + " not found.");
+            response.entity("Attachment with Id " + id + " not found.");
         } catch (IOException e) {
             response = Response.status(Status.INTERNAL_SERVER_ERROR);
             response.type(MediaType.TEXT_HTML);
-            response.entity("Error reading attachment with Id " + Id + ".");
+            response.entity("Error reading attachment with Id " + id + ".");
         }
         return response.build();
     }

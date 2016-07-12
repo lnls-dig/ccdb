@@ -20,6 +20,9 @@
 package org.openepics.discs.conf.ejb;
 
 import org.openepics.discs.conf.ent.Artifact;
+import org.openepics.discs.conf.ent.ComptypeArtifact;
+import org.openepics.discs.conf.ent.DeviceArtifact;
+import org.openepics.discs.conf.ent.SlotArtifact;
 
 /**
  * DAO service for accessing artifact instances.
@@ -36,8 +39,17 @@ public class ArtifactEJB extends DAO<Artifact> {
      *            the artifact id
      * @return a artifact entity matching the criteria or <code>null</code>
      */
-     public Artifact findArtifactById(long id) {
-         return findById(id);
+    @Override
+     public Artifact findById(Object id) {
+         Artifact art = em.find(ComptypeArtifact.class, id);
+         if (art == null) {
+             art = em.find(SlotArtifact.class, id);
+             if (art == null) {
+                 art = em.find(DeviceArtifact.class, id);
+             }
+         }
+
+         return art;
      }
 
      @Override
