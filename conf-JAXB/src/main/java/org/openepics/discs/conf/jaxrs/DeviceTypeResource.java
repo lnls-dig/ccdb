@@ -24,6 +24,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.openepics.discs.conf.jaxb.DeviceType;
 
@@ -36,17 +37,33 @@ import org.openepics.discs.conf.jaxb.DeviceType;
 public interface DeviceTypeResource {
     /** @return returns all device types in the database. */
     @GET
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public List<DeviceType> getAllDeviceTypes();
 
     /**
      * Returns a specific device type.
      *
-     * @param name the name of the device type to retrieve
+     * @param name
+     *            the name of the device type to retrieve
      * @return the device type instance data
      */
     @GET
     @Path("{name}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public DeviceType getDeviceType(@PathParam("name") String name);
+
+    /**
+     * Returns a specific device type artifact file.
+     *
+     * @param name
+     *            the name of the device type from which to retrieve artifact
+     *            file.
+     * @param fileName
+     *            the name of the artifact file to retrieve.
+     * @return the device type artifact file
+     */
+    @GET
+    @Path("{name}/download/{fileName}")
+    @Produces({ MediaType.MEDIA_TYPE_WILDCARD })
+    public Response getAttachment(@PathParam("name") String name, @PathParam("fileName") String fileName);
 }

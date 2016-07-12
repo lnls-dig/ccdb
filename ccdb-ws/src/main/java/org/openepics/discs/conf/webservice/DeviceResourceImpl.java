@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 
 import org.openepics.discs.conf.ejb.DeviceEJB;
 import org.openepics.discs.conf.ejb.InstallationEJB;
@@ -36,6 +37,7 @@ import org.openepics.discs.conf.jaxb.Device;
 import org.openepics.discs.conf.jaxb.PropertyKind;
 import org.openepics.discs.conf.jaxb.PropertyValue;
 import org.openepics.discs.conf.jaxrs.DeviceResource;
+import org.openepics.discs.conf.util.BlobStore;
 import org.openepics.discs.conf.util.UnhandledCaseException;
 
 /**
@@ -47,6 +49,7 @@ public class DeviceResourceImpl implements DeviceResource {
 
     @Inject private DeviceEJB deviceEJB;
     @Inject private InstallationEJB installationEJB;
+    @Inject private BlobStore blobStore;
 
     @Override
     public List<Device> getAllDevices() {
@@ -56,6 +59,11 @@ public class DeviceResourceImpl implements DeviceResource {
     @Override
     public Device getDevice(String name) {
         return getDevice(deviceEJB.findByName(name));
+    }
+
+    @Override
+    public Response getAttachment(String name, String fileName) {
+        return GetAttachmentResourceBase.getFile(deviceEJB.findByName(name).getEntityArtifactList(), name, fileName, blobStore);
     }
 
     /**

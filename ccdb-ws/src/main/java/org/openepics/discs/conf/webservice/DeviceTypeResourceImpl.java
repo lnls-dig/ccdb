@@ -21,21 +21,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 
 import org.openepics.discs.conf.ejb.ComptypeEJB;
 import org.openepics.discs.conf.ent.ComponentType;
 import org.openepics.discs.conf.jaxb.Artifact;
 import org.openepics.discs.conf.jaxb.DeviceType;
 import org.openepics.discs.conf.jaxrs.DeviceTypeResource;
+import org.openepics.discs.conf.util.BlobStore;
 
 /**
  * An implementation of the DeviceTypeResource interface.
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
 public class DeviceTypeResourceImpl implements DeviceTypeResource {
 
     @Inject private ComptypeEJB comptypeEJB;
+    @Inject private BlobStore blobStore;
 
     @Override
     public List<DeviceType> getAllDeviceTypes() {
@@ -47,6 +51,11 @@ public class DeviceTypeResourceImpl implements DeviceTypeResource {
     @Override
     public DeviceType getDeviceType(String name) {
         return getDeviceType(comptypeEJB.findByName(name));
+    }
+
+    @Override
+    public Response getAttachment(String name, String fileName) {
+        return GetAttachmentResourceBase.getFile(comptypeEJB.findByName(name).getEntityArtifactList(), name, fileName, blobStore);
     }
 
     /** Transforms a CCDB database entity into a REST DTO object. Called from other web service classes as well.

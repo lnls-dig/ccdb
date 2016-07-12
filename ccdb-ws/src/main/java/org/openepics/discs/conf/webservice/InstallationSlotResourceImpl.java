@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openepics.discs.conf.ejb.ComptypeEJB;
@@ -45,6 +46,7 @@ import org.openepics.discs.conf.jaxb.InstallationSlot;
 import org.openepics.discs.conf.jaxb.PropertyKind;
 import org.openepics.discs.conf.jaxb.PropertyValue;
 import org.openepics.discs.conf.jaxrs.InstallationSlotResource;
+import org.openepics.discs.conf.util.BlobStore;
 import org.openepics.discs.conf.util.UnhandledCaseException;
 
 /**
@@ -57,6 +59,7 @@ public class InstallationSlotResourceImpl implements InstallationSlotResource {
     @Inject private SlotEJB slotEJB;
     @Inject private ComptypeEJB compTypeEJB;
     @Inject private InstallationEJB installationEJB;
+    @Inject private BlobStore blobStore;
 
     @FunctionalInterface
     private interface RelatedSlotExtractor {
@@ -84,6 +87,12 @@ public class InstallationSlotResourceImpl implements InstallationSlotResource {
             return null;
         }
         return createInstallationSlot(installationSlot);
+    }
+
+
+    @Override
+    public Response getAttachment(String name, String fileName) {
+        return GetAttachmentResourceBase.getFile(slotEJB.findByName(name).getEntityArtifactList(), name, fileName, blobStore);
     }
 
     private List<InstallationSlot> getInstallationSlotsForType(String deviceType) {
