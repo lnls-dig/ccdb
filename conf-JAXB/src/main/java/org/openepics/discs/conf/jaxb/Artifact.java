@@ -41,7 +41,7 @@ public class Artifact {
     /**
      * Constructs a new Artifact from conf.ent.Artifact.
      *
-     * @param entityArtifact
+     * @param entityArtifact the {@link org.openepics.discs.conf.ent.Artifact} to base the artifact on.
      */
     public Artifact(org.openepics.discs.conf.ent.Artifact entityArtifact) {
         this.name = entityArtifact.getName();

@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
 
 import org.openepics.discs.client.impl.ClosableResponse;
 import org.openepics.discs.client.impl.ResponseException;
@@ -40,11 +41,10 @@ import org.openepics.discs.conf.jaxrs.DeviceTypeResource;
  * @author <a href="mailto:miroslav.pavleski@cosylab.com">Miroslav Pavleski</a>
  */
 
-class DeviceTypeClient 
-    implements DeviceTypeResource {
-    
+class DeviceTypeClient implements DeviceTypeResource {
+
     private static final Logger LOG = Logger.getLogger(DeviceTypeClient.class.getName());
-    
+
     private static final String PATH_DEVICE_TYPES = "deviceType";
 
     @Nonnull private final CCDBClient client;
@@ -86,6 +86,18 @@ class DeviceTypeClient
         final String url = client.buildUrl(PATH_DEVICE_TYPES, name);
         try (final ClosableResponse response = client.getResponse(url)) {
             return response.readEntity(DeviceType.class);
+        } catch (Exception e) {
+            throw new ResponseException("Couldn't retrieve data from service at " + url + ".", e);
+        }
+    }
+
+    @Override
+    public Response getAttachment(String name, String fileName) {
+        LOG.fine("Invoking getAttachment");
+
+        final String url = client.buildUrl(PATH_DEVICE_TYPES, name, "download", fileName);
+        try (final ClosableResponse response = client.getResponse(url)) {
+            return response;
         } catch (Exception e) {
             throw new ResponseException("Couldn't retrieve data from service at " + url + ".", e);
         }
