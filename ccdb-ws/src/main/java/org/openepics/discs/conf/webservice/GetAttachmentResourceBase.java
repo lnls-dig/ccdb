@@ -29,6 +29,10 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.openepics.discs.conf.ent.Artifact;
+import org.openepics.discs.conf.ent.ComponentType;
+import org.openepics.discs.conf.ent.Device;
+import org.openepics.discs.conf.ent.InstallationRecord;
+import org.openepics.discs.conf.ent.Slot;
 import org.openepics.discs.conf.util.BlobStore;
 
 /**
@@ -42,19 +46,44 @@ class GetAttachmentResourceBase {
     private GetAttachmentResourceBase() {
     }
 
-    static Response getFile(final List<Artifact> artifacts, final String entityName, final String fileName,
-                    final BlobStore blobStore) {
-        ResponseBuilder response;
-        String uri = null;
+    static Response getFileForDeviceType(ComponentType componentType, final String entityName, final String fileName,
+            final BlobStore blobStore) {
+        return getFile(findArtifactUri(componentType.getEntityArtifactList(), fileName), entityName, fileName,
+                blobStore);
+    }
 
-        if (artifacts != null) {
-            for (Artifact artifact : artifacts) {
-                if (fileName.equals(artifact.getName())) {
-                    uri = artifact.getUri();
-                    break;
-                }
-            }
+    static Response getFileForDevice(final org.openepics.discs.conf.ent.Device device,
+            final InstallationRecord installationRecord, final String entityName, final String fileName,
+            final BlobStore blobStore) {
+        String uri = findArtifactUri(device.getEntityArtifactList(), fileName);
+
+        if ((uri == null) && (installationRecord != null)) {
+            uri = findArtifactUri(installationRecord.getSlot().getEntityArtifactList(), fileName);
         }
+        if (uri == null) {
+            uri = findArtifactUri(device.getComponentType().getEntityArtifactList(), fileName);
+        }
+        return getFile(uri, entityName, fileName, blobStore);
+    }
+
+    static Response getFileForSlot(final Slot slot, final InstallationRecord installationRecord,
+            final String entityName, final String fileName, final BlobStore blobStore) {
+        Device device = null;
+        String uri = findArtifactUri(slot.getEntityArtifactList(), fileName);
+
+        if ((uri == null) && (installationRecord != null)) {
+            device = installationRecord.getDevice();
+            uri = findArtifactUri(device.getEntityArtifactList(), fileName);
+        }
+        if (uri == null) {
+            uri = findArtifactUri(slot.getComponentType().getEntityArtifactList(), fileName);
+        }
+        return getFile(uri, entityName, fileName, blobStore);
+    }
+
+    private static Response getFile(final String uri, final String entityName, final String fileName,
+            final BlobStore blobStore) {
+        ResponseBuilder response;
 
         try {
             if (uri == null) {
@@ -78,5 +107,16 @@ class GetAttachmentResourceBase {
             response.entity("Error reading attachment with name " + fileName + ".");
         }
         return response.build();
+    }
+
+    private static String findArtifactUri(final List<Artifact> artifacts, final String fileName) {
+        if (artifacts != null) {
+            for (Artifact artifact : artifacts) {
+                if (fileName.equals(artifact.getName())) {
+                    return artifact.getUri();
+                }
+            }
+        }
+        return null;
     }
 }

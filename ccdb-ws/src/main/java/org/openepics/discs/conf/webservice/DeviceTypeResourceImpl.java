@@ -55,7 +55,7 @@ public class DeviceTypeResourceImpl implements DeviceTypeResource {
 
     @Override
     public Response getAttachment(String name, String fileName) {
-        return GetAttachmentResourceBase.getFile(comptypeEJB.findByName(name).getEntityArtifactList(), name, fileName, blobStore);
+        return GetAttachmentResourceBase.getFileForDeviceType(comptypeEJB.findByName(name), name, fileName, blobStore);
     }
 
     /** Transforms a CCDB database entity into a REST DTO object. Called from other web service classes as well.

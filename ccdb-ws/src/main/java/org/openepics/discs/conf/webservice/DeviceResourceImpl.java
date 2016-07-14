@@ -63,7 +63,9 @@ public class DeviceResourceImpl implements DeviceResource {
 
     @Override
     public Response getAttachment(String name, String fileName) {
-        return GetAttachmentResourceBase.getFile(deviceEJB.findByName(name).getEntityArtifactList(), name, fileName, blobStore);
+        final org.openepics.discs.conf.ent.Device device = deviceEJB.findByName(name);
+        return GetAttachmentResourceBase.getFileForDevice(device,
+                        installationEJB.getActiveInstallationRecordForDevice(device) , name, fileName, blobStore);
     }
 
     /**

@@ -92,7 +92,9 @@ public class InstallationSlotResourceImpl implements InstallationSlotResource {
 
     @Override
     public Response getAttachment(String name, String fileName) {
-        return GetAttachmentResourceBase.getFile(slotEJB.findByName(name).getEntityArtifactList(), name, fileName, blobStore);
+        final Slot slot = slotEJB.findByName(name);
+        return GetAttachmentResourceBase.getFileForSlot(slot, installationEJB.getActiveInstallationRecordForSlot(slot),
+                                                                                            name, fileName, blobStore);
     }
 
     private List<InstallationSlot> getInstallationSlotsForType(String deviceType) {

@@ -31,7 +31,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.EJBException;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIForm;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 
@@ -114,35 +117,61 @@ public abstract class AbstractAttributesController
      *
      * @throws IOException thrown if file in the artifact could not be stored on the file system
      */
-    public void modifyArtifact() throws IOException {
-        try {
-            final EntityAttrArtifactView<C> artifactView = getDialogAttrArtifact();
+    public void modifyArtifact(ActionEvent event) throws IOException {
+        final EntityAttrArtifactView<C> artifactView = getDialogAttrArtifact();
 
-            if (artifactView.isArtifactInternal()) {
-                final byte[] importData = artifactView.getImportData();
-                if (importData != null) {
-                    if (artifactView.isArtifactBeingModified()) {
-                        blobStore.deleteFile(artifactView.getArtifactURI());
-                    }
-                    artifactView.setArtifactURI(blobStore.storeFile(new ByteArrayInputStream(importData)));
+        if (artifactView.isArtifactInternal()) {
+            final byte[] importData = artifactView.getImportData();
+            if (importData != null) {
+                if (artifactView.isArtifactBeingModified()) {
+                    blobStore.deleteFile(artifactView.getArtifactURI());
                 }
+                artifactView.setArtifactURI(blobStore.storeFile(new ByteArrayInputStream(importData)));
             }
+        }
 
-            final Artifact artifactInstance = artifactView.getEntity();
+        final Artifact artifactInstance = artifactView.getEntity();
 
+        final List<Artifact> existingArtifacts = artifactView.getParentEntity().getEntityArtifactList();
+        boolean uniqueName = true;
+        for (Artifact existingArtifact : existingArtifacts) {
+            if (existingArtifact.getName().equals(artifactInstance.getName())) {
+                uniqueName = false;
+                break;
+            }
+        }
+
+        if (uniqueName) {
             if (artifactView.isArtifactBeingModified()) {
                 dao.saveChild(artifactInstance);
             } else {
                 dao.addChild(artifactInstance);
             }
+
             UiUtility.showMessage(FacesMessage.SEVERITY_INFO, UiUtility.MESSAGE_SUMMARY_SUCCESS,
-                    artifactView.isArtifactBeingModified() ? "Artifact has been modified" : "New artifact has been created");
-        } finally {
+                    artifactView.isArtifactBeingModified() ? "Artifact has been modified"
+                                                                : "New artifact has been created");
             refreshParentEntity(dialogAttribute);
             resetFields();
             clearRelatedAttributeInformation();
             populateAttributesList();
+        } else {
+            final String formName = getFormId(event.getComponent());
+            FacesContext.getCurrentInstance().validationFailed();
+            FacesContext.getCurrentInstance().addMessage(formName + "nameValidationMessage",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                        UiUtility.MESSAGE_SUMMARY_ERROR, artifactInstance.isInternal()
+                                                                                        ? "File name must be unique."
+                                                                                        : "Name must be unique."));
         }
+    }
+
+    private String getFormId(final UIComponent input) {
+        UIComponent cmp = input;
+        while ((cmp != null) && !(cmp instanceof UIForm)) {
+            cmp = cmp.getParent();
+        }
+        return cmp != null ? cmp.getId() + ":" : "";
     }
 
     /** Adds new {@link Tag} to parent {@link ConfigurationEntity} */
