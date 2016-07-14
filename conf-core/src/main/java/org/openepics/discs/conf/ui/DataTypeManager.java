@@ -51,6 +51,7 @@ import org.openepics.discs.conf.ui.lazymodels.CCDBLazyModel;
 import org.openepics.discs.conf.ui.lazymodels.DataTypeLazyModel;
 import org.openepics.discs.conf.ui.util.UiUtility;
 import org.openepics.discs.conf.util.BuiltInDataType;
+import org.openepics.discs.conf.util.Conversion;
 import org.openepics.discs.conf.util.Utility;
 import org.openepics.discs.conf.views.UserEnumerationView;
 import org.openepics.seds.api.datatypes.SedsEnum;
@@ -320,7 +321,22 @@ public class DataTypeManager extends AbstractExcelSingleFileImportUI implements 
 
     /** @return a list of all {@link DataType}s */
     public List<DataType> getDataTypes() {
-        return ImmutableList.copyOf(dataTypeEJB.findAll());
+        final List<DataType> sortedDataTypes = dataTypeEJB.findAll().stream().
+                sorted((dt1, dt2) ->
+                    {
+                        BuiltInDataType bidt = Conversion.getBuiltInDataType(dt1);
+                        final long dt1Id = (bidt == BuiltInDataType.USER_DEFINED_ENUM)
+                                            ? dt1.getId() + BuiltInDataType.values().length : bidt.ordinal();
+                        bidt = Conversion.getBuiltInDataType(dt2);
+                        final long dt2Id = (bidt == BuiltInDataType.USER_DEFINED_ENUM)
+                                ? dt2.getId() + BuiltInDataType.values().length : bidt.ordinal();
+
+                        final long diff = dt1Id - dt2Id;
+                        return (diff < Integer.MIN_VALUE) ? Integer.MIN_VALUE :
+                            ((diff > Integer.MAX_VALUE) ? Integer.MAX_VALUE : Long.valueOf(diff).intValue());
+                    }).
+                collect(Collectors.toList());
+        return ImmutableList.copyOf(sortedDataTypes);
     }
 
     /** @return the lazy loading data model */

@@ -79,6 +79,7 @@ public class InitialDBPopulation {
         createPrivilegesForRole(role, EntityType.DATA_TYPE);
         createPrivilegesForRole(role, EntityType.INSTALLATION_RECORD);
 
+        em.persist(createDataType(BuiltInDataType.BOOLEAN.toString(), "Boolean data type", true, BOOLEAN_DEFINITION));
         em.persist(createDataType(BuiltInDataType.INTEGER.toString(), "Integer number", true, null));
         em.persist(createDataType(BuiltInDataType.DOUBLE.toString(), "Double precision floating point", true, null));
         em.persist(createDataType(BuiltInDataType.STRING.toString(), "String of characters (text)", true, null));
@@ -90,7 +91,6 @@ public class InitialDBPopulation {
         em.persist(createDataType(BuiltInDataType.STRING_LIST.toString(), "List of strings (1D array)", false, null));
         em.persist(createDataType(BuiltInDataType.DBL_TABLE.toString(),
                 "Table of double precision numbers (2D array)", false, null));
-        em.persist(createDataType(BuiltInDataType.BOOLEAN.toString(), "Boolean data type", true, BOOLEAN_DEFINITION));
 
         em.persist(createSlotRelation(SlotRelationName.CONTAINS));
         em.persist(createSlotRelation(SlotRelationName.POWERS));

@@ -43,6 +43,7 @@ import org.openepics.discs.conf.ent.fields.EnumFields;
 import org.openepics.discs.conf.security.Authorized;
 import org.openepics.discs.conf.util.BuiltInDataType;
 import org.openepics.discs.conf.util.CRUDOperation;
+import org.openepics.discs.conf.util.Conversion;
 import org.openepics.discs.conf.util.ProtectedDataTypeModificationException;
 import org.openepics.discs.conf.util.SortOrder;
 import org.openepics.discs.conf.util.Utility;
@@ -265,19 +266,6 @@ public class DataTypeEJB extends DAO<DataType> {
     }
 
     private boolean isBuiltInDataType(final DataType dataType) {
-        switch (dataType.getName()) {
-            case BuiltInDataType.BOOLEAN_NAME:
-            case BuiltInDataType.DBL_TABLE_NAME:
-            case BuiltInDataType.DBL_VECTOR_NAME:
-            case BuiltInDataType.DBL_NAME:
-            case BuiltInDataType.INT_NAME:
-            case BuiltInDataType.INT_VECTOR_NAME:
-            case BuiltInDataType.STR_NAME:
-            case BuiltInDataType.STRING_LIST_NAME:
-            case BuiltInDataType.TIMESTAMP_NAME:
-                return true;
-            default:
-                return false;
-        }
+        return Conversion.getBuiltInDataType(dataType) != BuiltInDataType.USER_DEFINED_ENUM;
     }
 }
