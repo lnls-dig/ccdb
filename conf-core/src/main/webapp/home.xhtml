@@ -74,7 +74,8 @@
                                                             :hierarchies:addButton :hierarchies:content:installationDetails 
                                                             :hierarchies:content:slotAttributes :hierarchies:content:addRelationship 
                                                             :hierarchies:content:editRelationship :hierarchies:clipboardOperations"
-                                                    oncomplete="hierarchiesResizeAll();" />
+                                                    oncomplete="hierarchiesResizeAll();scrollSelectedIntoView(getVisibleTree());
+                                                    PF('relationshipsWidget').clearFilters();PF('attributesDataTable').clearFilters();" />
                                                 <p:ajax event="unselect" listener="#{hierarchiesController.onNodeUnselect}"
                                                     update=":hierarchies:content:relationsTable :hierarchies:deleteButton 
                                                             :hierarchies:downButton :hierarchies:upButton :hierarchies:editButton 
