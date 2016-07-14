@@ -49,6 +49,11 @@ public class InitialDBPopulation {
     private static final String SYSTEM_USER = "system";
     private static final String ADMIN = "admin";
 
+    private static final String BOOLEAN_DEFINITION = "{\"meta\":"
+            + "{\"type\":\"SedsEnum\",\"protocol\":\"SEDSv1\",\"version\":\"1.0.0\"},"
+            + "\"data\":{\"selected\":\"FALSE\"},"
+            + "\"type\":{\"elements\":[\"FALSE\",\"TRUE\"]}}";
+
     @PersistenceContext private EntityManager em;
 
     /** Fills out initial data for empty database */
@@ -85,6 +90,7 @@ public class InitialDBPopulation {
         em.persist(createDataType(BuiltInDataType.STRING_LIST.toString(), "List of strings (1D array)", false, null));
         em.persist(createDataType(BuiltInDataType.DBL_TABLE.toString(),
                 "Table of double precision numbers (2D array)", false, null));
+        em.persist(createDataType(BuiltInDataType.BOOLEAN.toString(), "Boolean data type", true, BOOLEAN_DEFINITION));
 
         em.persist(createSlotRelation(SlotRelationName.CONTAINS));
         em.persist(createSlotRelation(SlotRelationName.POWERS));

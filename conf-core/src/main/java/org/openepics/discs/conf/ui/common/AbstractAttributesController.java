@@ -115,6 +115,8 @@ public abstract class AbstractAttributesController
     /**
      * Adds or modifies an artifact
      *
+     * @param event
+     *              the PrimeFaces provided event
      * @throws IOException thrown if file in the artifact could not be stored on the file system
      */
     public void modifyArtifact(ActionEvent event) throws IOException {

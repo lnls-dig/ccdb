@@ -36,6 +36,8 @@ public enum BuiltInDataType {
     STRING(BuiltInDataType.STR_NAME),
     /** The property value can be a date and time timestamp */
     TIMESTAMP(BuiltInDataType.TIMESTAMP_NAME),
+    /** Standard boolean: TRUE / FALSE */
+    BOOLEAN(BuiltInDataType.BOOLEAN_NAME),
     /** The property value can be a 1-D vector of signed 32-bit integer numbers */
     INT_VECTOR(BuiltInDataType.INT_VECTOR_NAME),
     /** The property value can be a 1-D vector of double precision numbers */
@@ -51,11 +53,12 @@ public enum BuiltInDataType {
     public static final String DBL_NAME = "Double";
     public static final String STR_NAME = "String";
     public static final String TIMESTAMP_NAME = "Timestamp";
-    public static final String INT_VECTOR_NAME = "Integers Vector";
-    public static final String DBL_VECTOR_NAME = "Doubles Vector";
+    public static final String INT_VECTOR_NAME = "Integers List";
+    public static final String DBL_VECTOR_NAME = "Doubles List";
     public static final String STRING_LIST_NAME = "Strings List";
     public static final String DBL_TABLE_NAME = "Doubles Table";
     public static final String ENUM_NAME = "Enumeration";
+    public static final String BOOLEAN_NAME = "Boolean";
 
     private String dbName;
 

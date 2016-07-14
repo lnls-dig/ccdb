@@ -132,6 +132,9 @@ public class Conversion {
             case BuiltInDataType.STR_NAME :
                 builtInDataType = BuiltInDataType.STRING;
                 break;
+            case BuiltInDataType.BOOLEAN_NAME:
+                builtInDataType = BuiltInDataType.BOOLEAN;
+                break;
             case BuiltInDataType.TIMESTAMP_NAME :
                 builtInDataType = BuiltInDataType.TIMESTAMP;
                 break;
@@ -170,6 +173,7 @@ public class Conversion {
             case DOUBLE:
                 return PropertyValueUIElement.INPUT;
             case USER_DEFINED_ENUM:
+            case BOOLEAN:
                 return PropertyValueUIElement.SELECT_ONE_MENU;
             case INT_VECTOR:
             case DBL_VECTOR:
@@ -220,6 +224,7 @@ public class Conversion {
             case DOUBLE:
                 convertedValue = new DblValue(strValue);
                 break;
+            case BOOLEAN:
             case USER_DEFINED_ENUM:
                 convertedValue = new EnumValue(Conversion.toEnum(strValue, dataType));
                 break;

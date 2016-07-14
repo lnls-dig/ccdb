@@ -44,6 +44,7 @@ public class ConversionTest {
     private final DataType intDataType = new DataType(BuiltInDataType.INT_NAME, "", true, null);
     private final DataType dblDataType = new DataType(BuiltInDataType.DBL_NAME, "", true, null);
     private final DataType strDataType = new DataType(BuiltInDataType.STR_NAME, "", true, null);
+    private final DataType boolDataType = new DataType(BuiltInDataType.BOOLEAN_NAME, "", true, null);
     private final DataType timestampDataType = new DataType(BuiltInDataType.TIMESTAMP_NAME, "", true, null);
 
     private final DataType dblVectorDataType = new DataType(BuiltInDataType.DBL_VECTOR_NAME, "", false, null);
@@ -58,6 +59,7 @@ public class ConversionTest {
     private final Property intProperty = new Property("IntProperty", "");
     private final Property dblProperty = new Property("DblProperty", "");
     private final Property strProperty = new Property("StrProperty", "");
+    private final Property boolProperty = new Property("BoolProperty", "");
     private final Property timestampProperty = new Property("TimestampProperty", "");
 
     private final Property dblVectorProperty = new Property("DblVectorProperty", "");
@@ -73,6 +75,7 @@ public class ConversionTest {
         intProperty.setDataType(intDataType);
         dblProperty.setDataType(dblDataType);
         strProperty.setDataType(strDataType);
+        boolProperty.setDataType(boolDataType);
         timestampProperty.setDataType(timestampDataType);
         dblVectorProperty.setDataType(dblVectorDataType);
         intVectorProperty.setDataType(intVectorDataType);
@@ -89,6 +92,11 @@ public class ConversionTest {
     @Test
     public void dataTypeInt() {
         assertEquals(BuiltInDataType.INTEGER, Conversion.getBuiltInDataType(intProperty.getDataType()));
+    }
+
+    @Test
+    public void dataTypeBoolean() {
+        assertEquals(BuiltInDataType.BOOLEAN, Conversion.getBuiltInDataType(boolProperty.getDataType()));
     }
 
     @Test

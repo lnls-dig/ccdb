@@ -123,7 +123,9 @@ public class EntityAttrPropertyValueView<E extends ConfigurationEntity & NamedEn
 
     /** @return The list of values the user can select a value from if the {@link DataType} is an enumeration. */
     public List<String> getEnumSelections() {
-        if (Conversion.getBuiltInDataType(propertyValue.getProperty().getDataType()).equals(BuiltInDataType.USER_DEFINED_ENUM)) {
+        final BuiltInDataType propertyDataType = Conversion.getBuiltInDataType(propertyValue.getProperty().getDataType());
+        if (propertyDataType.equals(BuiltInDataType.USER_DEFINED_ENUM)
+                || propertyDataType.equals(BuiltInDataType.BOOLEAN)) {
             // if it is an enumeration, get the list of its options from the data type definition field
             return Conversion.prepareEnumSelections(propertyValue.getProperty().getDataType());
         }
