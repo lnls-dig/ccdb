@@ -92,9 +92,8 @@ public class RBACEntityTypeSecurityPolicy extends AbstractEnityTypeSecurityPolic
     /** Java EE post construct life-cycle method. */
     @PostConstruct
     public void init() {
-        LOGGER.log(Level.INFO, "Using RBAC security policy.");
+        LOGGER.log(Level.FINE, "Using RBAC security policy.");
     }
-
 
     @Override
     public void login(String userName, String password) {
