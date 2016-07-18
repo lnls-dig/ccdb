@@ -27,6 +27,8 @@ import org.openepics.discs.conf.ent.ConfigurationEntity;
 import org.openepics.discs.conf.ent.DataType;
 import org.openepics.discs.conf.ent.NamedEntity;
 import org.openepics.discs.conf.ent.Unit;
+import org.openepics.discs.conf.util.BuiltInDataType;
+import org.openepics.discs.conf.util.Conversion;
 
 /**
  * The UI view class. This is a helper class containing all the information that is used in the UI and is displayed
@@ -109,5 +111,10 @@ public abstract class EntityAttributeView<E extends ConfigurationEntity & NamedE
     /** @return <code>true</code> if attribute has a contains a file (is an artifact), <code>false</code> otherwise */
     public boolean getHasFile() {
         return false;
+    }
+
+    /** @return <code>true</code> if attribute is a user defined data type, <code>false</code> otherwise */
+    public boolean isUserDefinedDataType(){
+        return getType() == null ? false : Conversion.getBuiltInDataType(getType()) == BuiltInDataType.USER_DEFINED_ENUM;
     }
 }

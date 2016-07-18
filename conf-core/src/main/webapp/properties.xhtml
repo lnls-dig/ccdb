@@ -44,7 +44,12 @@
 
                         <p:column headerText="Data Type" sortBy="#{property.dataType.name}" 
                                 filterBy="#{property.dataType.name}" filterMatchMode="contains" styleClass="tableColWidth10">
-                            <h:outputText value="#{property.dataType.name}" />
+                            <h:outputText value="#{not empty property.dataType ? property.dataType.name : '-'}" 
+                                    rendered="#{not property.userDefinedDataType}" />
+                            <h:outputLink rendered="#{property.userDefinedDataType}" 
+                                    value="#{request.contextPath}/enums.xhtml?id=#{property.dataType.id}">
+                                <h:outputText value="#{property.dataType.name}" style="text-decoration: underline;" />
+                            </h:outputLink>
                         </p:column>
 
                         <p:column id="uniCol" headerText="Unit" sortBy="#{property.unit.name}" 

@@ -60,7 +60,12 @@
 
             <p:column headerText="Data Type" sortBy="#{attribute.type.name}" filterBy="#{attribute.type.name}"
                     filterMatchMode="contains">
-                <h:outputText value="#{!empty attribute.type ? attribute.type.name : '-'}" />
+                <h:outputText value="#{not empty attribute.type ? attribute.type.name : '-'}" 
+                    rendered="#{!attribute.userDefinedDataType}" />
+                <h:outputLink rendered="#{attribute.userDefinedDataType}" 
+                        value="#{request.contextPath}/enums.xhtml?id=#{attribute.type.id}">
+                    <h:outputText value="#{attribute.type.name}" style="text-decoration: underline;" />
+                </h:outputLink>
             </p:column>
         </p:dataTable>
     </cc:implementation>
