@@ -46,9 +46,10 @@ import org.openepics.discs.conf.testutil.TestUtility;
 /**
  *
  * @author <a href="mailto:miroslav.pavleski@cosylab.com">Miroslav Pavleski</a>
- *
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
 @RunWith(Arquillian.class)
+@ApplyScriptBefore(value= {"truncate_database.sql", "update_sequences.sql"})
 public class SlotEJBIT {
     @Inject SlotEJB slotService;
     @Inject ComptypeEJB compTypeService;
@@ -69,7 +70,6 @@ public class SlotEJBIT {
     @Test
     @UsingDataSet(value= {"basic_component_types.xml", "component_type.xml", "unit.xml", "property.xml",
             "comptype_property_value.xml", "slot.xml"})
-    @ApplyScriptBefore(value= {"update_sequences.sql"})
     public void testFindAll() {
         final List<Slot> slots = slotService.findAll();
         assertNotEquals(slots.size(), 0);
@@ -78,7 +78,6 @@ public class SlotEJBIT {
     @Test
     @UsingDataSet(value= {"basic_component_types.xml", "component_type.xml", "unit.xml", "property.xml",
             "comptype_property_value.xml", "slot.xml"})
-    @ApplyScriptBefore(value= {"update_sequences.sql"})
     public void testFindById() {
         // findById is implicitly tested (called by refreshEntity)
         final Slot slot = slotService.refreshEntity(slotService.findByName("FE_SRC1"));
@@ -89,7 +88,6 @@ public class SlotEJBIT {
     @Test
     @UsingDataSet(value= {"basic_component_types.xml", "component_type.xml", "unit.xml", "property.xml",
             "comptype_property_value.xml", "slot.xml"})
-    @ApplyScriptBefore(value= {"update_sequences.sql"})
     public void testByIdInvalid() {
         final Slot slot = slotService.findById(12321321321L);
         assertNull(slot);
@@ -98,7 +96,6 @@ public class SlotEJBIT {
     @Test
     @UsingDataSet(value= {"basic_component_types.xml", "component_type.xml", "unit.xml", "property.xml",
             "comptype_property_value.xml", "slot.xml"})
-    @ApplyScriptBefore(value= {"update_sequences.sql"})
     public void testFindByName() {
         final Slot slot = slotService.findByName("FE_SRC1");
         assertNotNull(slot);
@@ -108,7 +105,6 @@ public class SlotEJBIT {
     @Test
     @UsingDataSet(value= {"basic_component_types.xml", "component_type.xml", "unit.xml", "property.xml",
             "comptype_property_value.xml", "slot.xml"})
-    @ApplyScriptBefore(value= {"update_sequences.sql"})
     public void testFindByNameInvalid() {
         final Slot slot = slotService.findByName("R4nd0m_Stuff");
         assertNull(slot);
@@ -117,7 +113,6 @@ public class SlotEJBIT {
     @Test
     @UsingDataSet(value= {"basic_component_types.xml", "component_type.xml", "unit.xml", "property.xml",
             "comptype_property_value.xml", "slot.xml"})
-    @ApplyScriptBefore(value= {"update_sequences.sql"})
     @ApplyScriptAfter(value= {"delete_tags.sql"})
     public void testAdd() {
         final Slot slot = new Slot("ABrandNewSlot", true);
@@ -143,7 +138,6 @@ public class SlotEJBIT {
     @Test
     @UsingDataSet(value= {"basic_component_types.xml", "component_type.xml", "unit.xml", "property.xml",
             "comptype_property_value.xml", "slot.xml"})
-    @ApplyScriptBefore(value= {"update_sequences.sql"})
     @ApplyScriptAfter(value= {"delete_tags.sql"})
     public void testSave() {
         final Slot slot = slotService.findByName("FS1_CSS");
@@ -168,7 +162,6 @@ public class SlotEJBIT {
     @Test
     @UsingDataSet(value= {"basic_component_types.xml", "component_type.xml", "unit.xml", "property.xml",
             "comptype_property_value.xml", "slot.xml"})
-    @ApplyScriptBefore(value= {"update_sequences.sql"})
     @ApplyScriptAfter(value= {"delete_tags.sql"})
     public void testDelete() {
         final Slot slot = slotService.findByName("FS1_CSS");
@@ -181,7 +174,6 @@ public class SlotEJBIT {
     /* TODO add later
     @Test
     @UsingDataSet(value={"component_type.xml", "unit.xml", "property.xml", "comptype_property_value.xml", "slot.xml"})
-    @ApplyScriptBefore(value={"update_sequences.sql"})
     public void testAddSlotProp() {
         final ComponentType compType = slotService.findByName(SEARCH_COMP_TYPE_NAME);
 
@@ -203,7 +195,6 @@ public class SlotEJBIT {
 
     @Test
     @UsingDataSet(value={"component_type.xml", "unit.xml", "property.xml", "comptype_property_value.xml"})
-    @ApplyScriptBefore(value={"update_sequences.sql"})
     public void testSaveSlotProp() {
         final ComponentType compType = slotService.findByName(SEARCH_COMP_TYPE_NAME);
         final SlotPropertyValue compValue = compType.getSlotPropertyList().get(0);
@@ -218,7 +209,6 @@ public class SlotEJBIT {
 
     @Test
     @UsingDataSet(value={"component_type.xml", "unit.xml", "property.xml", "comptype_property_value.xml"})
-    @ApplyScriptBefore(value={"update_sequences.sql"})
     public void testDeleteSlotProp() {
         final ComponentType compType = slotService.findByName(SEARCH_COMP_TYPE_NAME);
         final SlotPropertyValue compValue = compType.getSlotPropertyList().get(0);
@@ -228,5 +218,4 @@ public class SlotEJBIT {
         final ComponentType newCompType = slotService.findByName(SEARCH_COMP_TYPE_NAME);
         assertFalse(newCompType.getSlotPropertyList().contains(compValue));
     }*/
-
 }

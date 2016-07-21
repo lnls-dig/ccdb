@@ -49,11 +49,11 @@ import org.openepics.discs.conf.ent.values.Value;
 import org.openepics.discs.conf.testutil.TestUtility;
 
 /**
- *
  * @author <a href="mailto:miroslav.pavleski@cosylab.com">Miroslav Pavleski</a>
- *
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
 @RunWith(Arquillian.class)
+@ApplyScriptBefore(value= {"truncate_database.sql", "update_sequences.sql"})
 public class ComptypeEJBIT {
     @Inject ComptypeEJB compTypesService;
     @Inject PropertyEJB propertyService;
@@ -114,7 +114,6 @@ public class ComptypeEJBIT {
 
     @Test
     @UsingDataSet(value= {"basic_component_types.xml", "component_type.xml", "slot.xml"})
-    @ApplyScriptBefore(value= {"update_sequences.sql"})
     @ApplyScriptAfter(value= {"delete_tags.sql"})
     public void testAddComponentType() {
         final ComponentType compType = new ComponentType("someNewComponentType");
@@ -137,7 +136,6 @@ public class ComptypeEJBIT {
 
     @Test
     @UsingDataSet(value= {"basic_component_types.xml", "component_type.xml", "slot.xml"})
-    @ApplyScriptBefore(value= {"update_sequences.sql"})
     @ApplyScriptAfter(value= {"delete_tags.sql"})
     public void testSaveComponentType() {
         final ComponentType compType = compTypesService.findByName(SEARCH_COMP_TYPE_NAME);
@@ -182,7 +180,6 @@ public class ComptypeEJBIT {
     @Test
     @UsingDataSet(value= {"basic_component_types.xml", "component_type.xml", "unit.xml", "property.xml",
             "comptype_property_value.xml", "slot.xml"})
-    @ApplyScriptBefore(value= {"update_sequences.sql"})
     public void testAddCompTypeProp() {
         final ComponentType compType = compTypesService.findByName(SEARCH_COMP_TYPE_NAME);
 
@@ -205,7 +202,6 @@ public class ComptypeEJBIT {
     @Test
     @UsingDataSet(value= {"basic_component_types.xml", "component_type.xml", "unit.xml", "property.xml",
             "comptype_property_value.xml", "slot.xml"})
-    @ApplyScriptBefore(value= {"update_sequences.sql"})
     public void testSaveCompTypeProp() {
         final ComponentType compType = compTypesService.findByName(SEARCH_COMP_TYPE_NAME);
         final ComptypePropertyValue compValue = compType.getComptypePropertyList().get(0);
@@ -221,7 +217,6 @@ public class ComptypeEJBIT {
     @Test
     @UsingDataSet(value= {"basic_component_types.xml", "component_type.xml", "unit.xml", "property.xml",
             "comptype_property_value.xml", "slot.xml"})
-    @ApplyScriptBefore(value= {"update_sequences.sql"})
     public void testDeleteCompTypeProp() {
         final ComponentType compType = compTypesService.findByName(SEARCH_COMP_TYPE_NAME);
         final ComptypePropertyValue compValue = compType.getComptypePropertyList().get(0);
@@ -231,31 +226,4 @@ public class ComptypeEJBIT {
         final ComponentType newCompType = compTypesService.findByName(SEARCH_COMP_TYPE_NAME);
         assertFalse(newCompType.getComptypePropertyList().contains(compValue));
     }
-
-    /* * * * * * * *
-    @Test
-    public void testAddCompTypeArtifact() {
-        fail("Not yet implemented");
-    }
-
-    @Test
-    public void testSaveCompTypeArtifact() {
-        fail("Not yet implemented");
-    }
-
-    @Test
-    public void testDeleteCompTypeArtifact() {
-        fail("Not yet implemented");
-    }
-
-    @Test
-    public void testSaveComptypeAsm() {
-        fail("Not yet implemented");
-    }
-
-    @Test
-    public void testDeleteComptypeAsm() {
-        fail("Not yet implemented");
-    }*/
-
 }
