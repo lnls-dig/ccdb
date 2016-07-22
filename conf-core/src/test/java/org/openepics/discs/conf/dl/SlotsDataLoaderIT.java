@@ -27,7 +27,6 @@ import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.persistence.ApplyScriptAfter;
 import org.jboss.arquillian.persistence.ApplyScriptBefore;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
@@ -57,7 +56,7 @@ import org.openepics.discs.conf.testutil.TestUtility;
  * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
 @RunWith(Arquillian.class)
-@ApplyScriptAfter(value= "truncate_database.sql")
+@ApplyScriptBefore(value= {"truncate_database.sql", "update_sequences.sql"})
 public class SlotsDataLoaderIT {
 
     @Inject private SlotsDataLoaderHelper dataLoaderHelper;
@@ -75,100 +74,10 @@ public class SlotsDataLoaderIT {
         testUtility.loginForTests();
     }
 
-    // TODO remove
-    @Test
-    @UsingDataSet(value= {"unit.xml", "property.xml", "basic_component_types.xml", "component_type.xml", "basic_slot.xml",
-            "basic_comptype_property_value.xml", "device.xml"})
-    @ApplyScriptAfter(value = "truncate_database.sql")
-    @Transactional(TransactionMode.DISABLED)
-    public void slotsImportSuccess() throws IOException {
-        final String slotsImportFileName = "slots-import-creation.xlsx";
-        final DataLoaderResult loaderResult = dataLoaderHelper.importSlots(slotsImportFileName);
-        Assert.assertFalse("Errors: " + loaderResult.toString(), loaderResult.isError());
-    }
-
-    // TODO remove
-    @Test
-    @UsingDataSet(value = { "unit.xml", "property.xml", "basic_component_types.xml", "component_type.xml",
-            "basic_slot.xml", "basic_comptype_property_value.xml", "device.xml" })
-    @ApplyScriptAfter(value = "truncate_database.sql")
-    @Transactional(TransactionMode.DISABLED)
-    public void slotsImportCreationFails() throws IOException {
-        final String slotsImportFileName = "slots-import-creation-fails.xlsx";
-
-        final List<ValidationMessage> expectedValidationMessages = new ArrayList<>();
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.REQUIRED_FIELD_MISSING, 23,
-                                                            SlotsDataLoader.HDR_ENTITY_TYPE, null));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.REQUIRED_FIELD_MISSING, 24,
-                                                            SlotsDataLoader.HDR_ENTITY_NAME, null));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.REQUIRED_FIELD_MISSING, 25,
-                                                            SlotsDataLoader.HDR_ENTITY_DESCRIPTION, null));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.REQUIRED_FIELD_MISSING, 26,
-                                                            SlotsDataLoader.HDR_ENTITY_DEVICE_TYPE, null));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.ENTITY_NOT_FOUND, 27,
-                                                            SlotsDataLoader.HDR_ENTITY_DEVICE_TYPE, "NOTHING"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.REQUIRED_FIELD_MISSING, 28,
-                                                            SlotsDataLoader.HDR_ENTITY_PARENT, null));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.NAME_ALREADY_EXISTS, 29,
-                                                            SlotsDataLoader.HDR_ENTITY_NAME, "Slot1"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.INSTALL_CANT_CONTAIN_CONTAINER, 30,
-                                                            null, null));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.PROPERTY_NOT_FOUND, 31,
-                                                            SlotsDataLoader.HDR_PROP_NAME, "DOC01"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.REQUIRED_FIELD_MISSING, 32,
-                                                            SlotsDataLoader.HDR_PROP_VALUE, null));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.REQUIRED_FIELD_MISSING, 33,
-                                                            SlotsDataLoader.HDR_PROP_NAME, null));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.CREATE_VALUE_EXISTS, 34,
-                                                            SlotsDataLoader.HDR_PROP_NAME, "ALIAS"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.CREATE_VALUE_EXISTS, 35,
-                                                            SlotsDataLoader.HDR_PROP_NAME, "FIELDPOLY"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.CONVERSION_ERROR, 36,
-                                                            SlotsDataLoader.HDR_PROP_VALUE, "Fail"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.PROPERTY_NOT_FOUND, 37,
-                                                            SlotsDataLoader.HDR_PROP_NAME, "ACENPOS"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.ENTITY_NOT_FOUND, 38,
-                                                            SlotsDataLoader.HDR_PROP_NAME, "NOT_THERE"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.CONVERSION_ERROR, 39,
-                                                            SlotsDataLoader.HDR_PROP_VALUE, "Fail"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.REQUIRED_FIELD_MISSING, 40,
-                                                            SlotsDataLoader.HDR_RELATION_TYPE, null));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.REQUIRED_FIELD_MISSING, 41,
-                                                            SlotsDataLoader.HDR_RELATION_ENTITY_NAME, null));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.INSTALL_CANT_CONTAIN_CONTAINER, 42,
-                                                            SlotsDataLoader.HDR_RELATION_ENTITY_NAME, "IMPORT_TEST_2"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.CONTROL_RELATIONSHIP_RESTRICTIONS, 43,
-                                                            SlotsDataLoader.HDR_RELATION_TYPE, "CONTROLS"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.POWER_RELATIONSHIP_RESTRICTIONS, 44,
-                                                            SlotsDataLoader.HDR_RELATION_TYPE, "POWERS"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.SAME_CHILD_AND_PARENT, 45,
-                                                            SlotsDataLoader.HDR_RELATION_ENTITY_NAME, "IMPORT_TEST_2"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.REQUIRED_FIELD_MISSING, 46,
-                                                            SlotsDataLoader.HDR_ENTITY_PARENT, null));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.ENTITY_NOT_FOUND, 47,
-                                                            SlotsDataLoader.HDR_ENTITY_PARENT, "NON_EXISTING"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.AMBIGUOUS_PARENT_SLOT, 48,
-                                                            SlotsDataLoader.HDR_ENTITY_PARENT, "IMPORT_TEST_4"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.ENTITY_NOT_FOUND, 49,
-                                                            SlotsDataLoader.HDR_ENTITY_PARENT, "IMPORT_TEST_5"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.REQUIRED_FIELD_MISSING, 50,
-                                                            SlotsDataLoader.HDR_INSTALLATION, null));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.INSTALLATION_EXISTING, 51,
-                                                            SlotsDataLoader.HDR_INSTALLATION, "BPM1-02"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.ENTITY_NOT_FOUND, 52,
-                                                            SlotsDataLoader.HDR_INSTALLATION, "BPM1-03"));
-        expectedValidationMessages.add(new ValidationMessage(ErrorMessage.DEVICE_TYPE_ERROR, 53,
-                                                            SlotsDataLoader.HDR_INSTALLATION, "BPM2-01"));
-
-        final DataLoaderResult loaderResult = dataLoaderHelper.importSlots(slotsImportFileName);
-        Assert.assertEquals("Error:\n" + loaderResult.toString(), expectedValidationMessages, loaderResult.getMessages());
-    }
-
     // TODO check
     @Test
     @UsingDataSet(value = { "unit.xml", "property.xml", "basic_component_types.xml", "component_type.xml",
             "basic_slot.xml", "basic_comptype_property_value.xml", "device.xml" })
-    @ApplyScriptAfter(value = "truncate_database.sql")
     @Transactional(TransactionMode.DISABLED)
     public void slotsCreateSuccess() throws IOException {
         final String slotsImportFileName = "slots-success-create.test.xlsx";
@@ -200,7 +109,6 @@ public class SlotsDataLoaderIT {
     @Test
     @UsingDataSet(value = { "unit.xml", "property.xml", "basic_component_types.xml", "component_type.xml",
             "basic_slot.xml", "basic_comptype_property_value.xml", "device.xml", "slot.xml" })
-    @ApplyScriptAfter(value = "truncate_database.sql")
     @Transactional(TransactionMode.DISABLED)
     public void slotsUpdateSuccess() throws IOException {
         final String slotsImportFileName = "slots-success-update.test.xlsx";
@@ -230,7 +138,6 @@ public class SlotsDataLoaderIT {
     @Test
     @UsingDataSet(value = { "unit.xml", "property.xml", "basic_component_types.xml", "component_type.xml",
             "basic_slot.xml", "basic_comptype_property_value.xml", "device.xml", "slot.xml" })
-    @ApplyScriptAfter(value = "truncate_database.sql")
     @Transactional(TransactionMode.DISABLED)
     public void slotsDeleteSuccess() throws IOException {
         final String slotsImportFileName = "slots-success-delete.test.xlsx";
@@ -275,10 +182,8 @@ public class SlotsDataLoaderIT {
     //////////////
 
     @Test
-    @ApplyScriptBefore(value = "truncate_database.sql")
     @UsingDataSet(value = { "unit.xml", "property.xml", "basic_component_types.xml", "component_type.xml",
             "basic_slot.xml", "basic_comptype_property_value.xml", "device.xml", "slot.xml", "slot_pair.xml" })
-    @ApplyScriptAfter(value = "truncate_database.sql")
     @Transactional(TransactionMode.DISABLED)
     public void slotsCreateEntityFail() throws IOException {
         final String slotsImportFileName = "slots-fail-create-entity.test.xlsx";
@@ -329,10 +234,8 @@ public class SlotsDataLoaderIT {
     }
 
     @Test
-    @ApplyScriptBefore(value = "truncate_database.sql")
     @UsingDataSet(value = { "unit.xml", "property.xml", "basic_component_types.xml", "component_type.xml",
             "basic_slot.xml", "basic_comptype_property_value.xml", "device.xml", "slot.xml", "slot_pair.xml" })
-    @ApplyScriptAfter(value = "truncate_database.sql")
     @Transactional(TransactionMode.DISABLED)
     public void slotsCreatePropertyFail() throws IOException {
         final String slotsImportFileName = "slots-fail-create-property.test.xlsx";
@@ -383,7 +286,6 @@ public class SlotsDataLoaderIT {
     @Test
     @UsingDataSet(value = { "unit.xml", "property.xml", "basic_component_types.xml", "component_type.xml",
             "basic_slot.xml", "basic_comptype_property_value.xml", "device.xml", "slot.xml" })
-    @ApplyScriptAfter(value = "truncate_database.sql")
     @Transactional(TransactionMode.DISABLED)
     public void slotsDeleteFail() throws IOException {
         final String slotsImportFileName = "slots-fail-delete.test.xlsx";
@@ -418,7 +320,6 @@ public class SlotsDataLoaderIT {
     @Test
     @UsingDataSet(value = { "unit.xml", "property.xml", "basic_component_types.xml", "component_type.xml",
             "basic_slot.xml", "basic_comptype_property_value.xml", "device.xml", "slot.xml" })
-    @ApplyScriptAfter(value = "truncate_database.sql")
     @Transactional(TransactionMode.DISABLED)
     public void slotsUpdateFail() throws IOException {
         final String slotsImportFileName = "slots-fail-update.test.xlsx";

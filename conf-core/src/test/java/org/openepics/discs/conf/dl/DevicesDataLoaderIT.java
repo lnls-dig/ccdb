@@ -28,7 +28,6 @@ import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.persistence.ApplyScriptAfter;
 import org.jboss.arquillian.persistence.ApplyScriptBefore;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
@@ -54,8 +53,7 @@ import org.openepics.discs.conf.ui.common.DataLoaderHandler;
  * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
 @RunWith(Arquillian.class)
-@ApplyScriptBefore(value = "update_sequences.sql")
-@ApplyScriptAfter(value = "truncate_database.sql")
+@ApplyScriptBefore(value= {"truncate_database.sql", "update_sequences.sql"})
 public class DevicesDataLoaderIT {
 
     @Inject @DevicesLoader private DataLoader devicesDataLoader;
