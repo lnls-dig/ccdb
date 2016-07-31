@@ -66,11 +66,11 @@ public class Utils {
         propertyValue.setValue(Objects.toString(entityPropertyValue.getPropValue()));
 
         if (entityPropertyValue instanceof ComptypePropertyValue) {
-            propertyValue.setPropertyKind(PropertyKind.TYPE);
+            propertyValue.setKind(PropertyKind.TYPE);
         } else if (entityPropertyValue instanceof SlotPropertyValue) {
-            propertyValue.setPropertyKind(PropertyKind.SLOT);
+            propertyValue.setKind(PropertyKind.SLOT);
         } else if (entityPropertyValue instanceof DevicePropertyValue) {
-            propertyValue.setPropertyKind(PropertyKind.DEVICE);
+            propertyValue.setKind(PropertyKind.DEVICE);
         } else {
             throw new UnhandledCaseException();
         }
