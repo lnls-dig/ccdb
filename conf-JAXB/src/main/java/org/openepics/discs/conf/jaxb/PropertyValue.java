@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
  * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
-@XmlRootElement(name = "propertyValue")
+@XmlRootElement(name = "property")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PropertyValue {
     private String name;

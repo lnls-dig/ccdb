@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
  * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
-@XmlRootElement(name = "installationSlot")
+@XmlRootElement(name = "slot")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({PropertyValue.class, Artifact.class})
 public class InstallationSlot {
