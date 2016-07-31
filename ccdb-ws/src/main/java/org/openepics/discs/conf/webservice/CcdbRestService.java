@@ -17,6 +17,7 @@
  */
 package org.openepics.discs.conf.webservice;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -30,7 +31,9 @@ import javax.ws.rs.core.Application;
  * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
 @ApplicationPath("/")
-public class CcdbRestService extends Application {
+public class CcdbRestService extends Application implements Serializable {
+    private static final long serialVersionUID = 6813705813230928697L;
+
     @Override
     public Set<Class<?>> getClasses() { // NOSONAR generic wildcard types part of the framework
         return getRestResourceClasses();

@@ -17,8 +17,8 @@
  */
 package org.openepics.discs.conf.webservice;
 
+import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,33 +27,30 @@ import javax.ws.rs.core.Response;
 
 import org.openepics.discs.conf.ejb.DeviceEJB;
 import org.openepics.discs.conf.ejb.InstallationEJB;
-import org.openepics.discs.conf.ent.ComptypePropertyValue;
-import org.openepics.discs.conf.ent.DevicePropertyValue;
 import org.openepics.discs.conf.ent.InstallationRecord;
-import org.openepics.discs.conf.ent.Property;
-import org.openepics.discs.conf.ent.SlotPropertyValue;
 import org.openepics.discs.conf.jaxb.Artifact;
 import org.openepics.discs.conf.jaxb.Device;
-import org.openepics.discs.conf.jaxb.PropertyKind;
 import org.openepics.discs.conf.jaxb.PropertyValue;
+import org.openepics.discs.conf.jaxb.lists.DeviceList;
 import org.openepics.discs.conf.jaxrs.DeviceResource;
 import org.openepics.discs.conf.util.BlobStore;
-import org.openepics.discs.conf.util.UnhandledCaseException;
 
 /**
  * An implementation of the DeviceResource interface.
  *
  * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
-public class DeviceResourceImpl implements DeviceResource {
+public class DeviceResourceImpl implements DeviceResource, Serializable {
+    private static final long serialVersionUID = 3108793668900422356L;
 
     @Inject private DeviceEJB deviceEJB;
     @Inject private InstallationEJB installationEJB;
     @Inject private BlobStore blobStore;
 
     @Override
-    public List<Device> getAllDevices() {
-        return deviceEJB.findAll().stream().map(device -> getDevice(device)).collect(Collectors.toList());
+    public DeviceList getAllDevices() {
+        return new DeviceList(deviceEJB.findAll().stream().map(device -> getDevice(device)).
+                                                                                        collect(Collectors.toList()));
     }
 
     @Override
@@ -81,10 +78,10 @@ public class DeviceResourceImpl implements DeviceResource {
             return null;
         } else {
             final Device deviceJAXB = new Device();
-            deviceJAXB.setSerialNumber(device.getSerialNumber());
-            deviceJAXB.setDeviceType(DeviceTypeResourceImpl.getDeviceType(device.getComponentType()));
-            deviceJAXB.setProperties(getPropertyValues(device));
-            deviceJAXB .setArtifacts(getArtifacts(device.getEntityArtifactList()));
+            deviceJAXB.setInventoryId(device.getSerialNumber());
+            deviceJAXB.setDeviceType(device.getComponentType().getName());
+            deviceJAXB.setProperties(Utils.emptyToNull(getPropertyValues(device)));
+            deviceJAXB.setArtifacts(Utils.emptyToNull(getArtifacts(device)));
             return deviceJAXB;
         }
     }
@@ -92,40 +89,29 @@ public class DeviceResourceImpl implements DeviceResource {
     private List<PropertyValue> getPropertyValues(final org.openepics.discs.conf.ent.Device device) {
         final InstallationRecord record = installationEJB .getLastInstallationRecordForDevice(device);
 
-        final Stream<? extends PropertyValue> externalProps = Stream.concat(
+        final Stream<PropertyValue> externalProps = Stream.concat(
                 device.getComponentType().getComptypePropertyList().stream().
                         filter(propValue -> !propValue.isPropertyDefinition()).
-                        map(propValue -> createPropertyValue(propValue)),
+                        map(propValue -> Utils.createPropertyValue(propValue)),
                 record == null ? Stream.empty() : record.getSlot().getSlotPropertyList().stream().
-                                                                    map(propValue -> createPropertyValue(propValue)));
+                                                                map(propValue -> Utils.createPropertyValue(propValue)));
 
-        return Stream.concat(device.getDevicePropertyList().stream().map(propValue -> createPropertyValue(propValue)),
-                                                                            externalProps).collect(Collectors.toList());
+        return Stream.concat(device.getDevicePropertyList().stream().
+                                            map(propValue -> Utils.createPropertyValue(propValue)), externalProps).
+                                            collect(Collectors.toList());
     }
 
-    private static PropertyValue createPropertyValue(
-            final org.openepics.discs.conf.ent.PropertyValue slotPropertyValue) {
-        final PropertyValue propertyValue = new PropertyValue();
-        final Property parentProperty = slotPropertyValue.getProperty();
-        propertyValue.setName(parentProperty.getName());
-        propertyValue.setDataType(parentProperty.getDataType() != null ? parentProperty.getDataType().getName() : null);
-        propertyValue.setUnit(parentProperty.getUnit() != null ? parentProperty.getUnit().getName() : null);
-        propertyValue.setValue(Objects.toString(slotPropertyValue.getPropValue()));
+    private List<Artifact> getArtifacts(final org.openepics.discs.conf.ent.Device device) {
+        final InstallationRecord record = installationEJB .getLastInstallationRecordForDevice(device);
 
-        if (slotPropertyValue instanceof ComptypePropertyValue) {
-            propertyValue.setPropertyKind(PropertyKind.TYPE);
-        } else if (slotPropertyValue instanceof SlotPropertyValue) {
-            propertyValue.setPropertyKind(PropertyKind.SLOT);
-        } else if (slotPropertyValue instanceof DevicePropertyValue) {
-            propertyValue.setPropertyKind(PropertyKind.DEVICE);
-        } else {
-            throw new UnhandledCaseException();
+        final List<Artifact> externalArtifacts = Utils.getArtifacts(device.getComponentType());
+        if (record != null) {
+            externalArtifacts.addAll(Utils.getArtifacts(record.getSlot()));
         }
 
-        return propertyValue;
-    }
+        final List<Artifact> deviceArtifacts = Utils.getArtifacts(device);
+        deviceArtifacts.addAll(externalArtifacts);
 
-    private static List<Artifact> getArtifacts(List<org.openepics.discs.conf.ent.Artifact> entityArtifactList) {
-        return entityArtifactList.stream().map(Artifact::new).collect(Collectors.toList());
+        return deviceArtifacts;
     }
 }

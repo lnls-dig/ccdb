@@ -18,36 +18,45 @@
 package org.openepics.discs.conf.webservice;
 
 
+import java.io.Serializable;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 
 import org.openepics.discs.conf.ejb.ComptypeEJB;
 import org.openepics.discs.conf.ejb.SlotEJB;
-import org.openepics.discs.conf.jaxb.InstallationSlotNames;
+import org.openepics.discs.conf.jaxb.InstallationSlotName;
+import org.openepics.discs.conf.jaxb.lists.InstallationSlotNameList;
 import org.openepics.discs.conf.jaxrs.InstallationSlotNameResource;
+import org.openepics.discs.conf.util.Utility;
 
 import com.google.common.base.Strings;
-import java.util.stream.Collectors;
-import org.openepics.discs.conf.ent.Slot;
-import org.openepics.discs.conf.util.Utility;
 
 /**
  * An implementation of the InstallationSlotBasicResource interface.
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
-public class InstallationSlotNameResourceImpl implements InstallationSlotNameResource {
+public class InstallationSlotNameResourceImpl implements InstallationSlotNameResource, Serializable {
+    private static final long serialVersionUID = -1014268826571453590L;
+
     @Inject private SlotEJB slotEJB;
     @Inject private ComptypeEJB comptypeEJB;
 
     @Override
-    public InstallationSlotNames getAllInstallationSlotNames(String deviceTypeName) {
-        return new InstallationSlotNames( Strings.isNullOrEmpty(deviceTypeName) ?
-                slotEJB.findAll().stream().
-                    map(Slot::getName).
-                    collect(Collectors.toList()) :
-                Utility.nullableToStream(comptypeEJB.findByName(deviceTypeName)).
-                    flatMap(compType -> slotEJB.findByComponentType(compType).stream()).
-                    map(Slot::getName).
-                    collect(Collectors.toList()) );
+    public InstallationSlotNameList getAllInstallationSlotNames(String deviceTypeName) {
+        return new InstallationSlotNameList(
+                Strings.isNullOrEmpty(deviceTypeName)
+                            ? slotEJB.findAll().stream().
+                                    filter(s -> !s.getComponentType().getName().equals(SlotEJB.ROOT_COMPONENT_TYPE)
+                                                && !s.getComponentType().getName().equals(SlotEJB.GRP_COMPONENT_TYPE)).
+                                    map(InstallationSlotName::new).collect(Collectors.toList())
+                            : Utility.nullableToStream(comptypeEJB.findByName(deviceTypeName)).
+                                    flatMap(compType -> slotEJB.findByComponentType(compType).stream()).
+                                    filter(s -> !s.getComponentType().getName().equals(SlotEJB.ROOT_COMPONENT_TYPE)
+                                            && !s.getComponentType().getName().equals(SlotEJB.GRP_COMPONENT_TYPE)).
+                                    map(InstallationSlotName::new).collect(Collectors.toList())
+                );
     }
 }

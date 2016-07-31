@@ -17,7 +17,7 @@
  */
 package org.openepics.discs.conf.webservice;
 
-import java.util.List;
+import java.io.Serializable;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -25,8 +25,8 @@ import javax.ws.rs.core.Response;
 
 import org.openepics.discs.conf.ejb.ComptypeEJB;
 import org.openepics.discs.conf.ent.ComponentType;
-import org.openepics.discs.conf.jaxb.Artifact;
 import org.openepics.discs.conf.jaxb.DeviceType;
+import org.openepics.discs.conf.jaxb.lists.DeviceTypeList;
 import org.openepics.discs.conf.jaxrs.DeviceTypeResource;
 import org.openepics.discs.conf.util.BlobStore;
 
@@ -36,16 +36,16 @@ import org.openepics.discs.conf.util.BlobStore;
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
  * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
-public class DeviceTypeResourceImpl implements DeviceTypeResource {
+public class DeviceTypeResourceImpl implements DeviceTypeResource, Serializable {
+    private static final long serialVersionUID = 2029600617687884478L;
 
     @Inject private ComptypeEJB comptypeEJB;
     @Inject private BlobStore blobStore;
 
     @Override
-    public List<DeviceType> getAllDeviceTypes() {
-        return comptypeEJB.findAll().stream().
-                map(compType -> getDeviceType(compType)).
-                collect(Collectors.toList());
+    public DeviceTypeList getAllDeviceTypes() {
+        return new DeviceTypeList(comptypeEJB.findAll().stream().map(compType -> getDeviceType(compType)).
+                                                                                        collect(Collectors.toList()));
     }
 
     @Override
@@ -62,19 +62,15 @@ public class DeviceTypeResourceImpl implements DeviceTypeResource {
      * @param componentType the CCDB database entity to wrap
      * @return REST DTO object
      */
-    protected static DeviceType getDeviceType(ComponentType componentType) {
+    private DeviceType getDeviceType(ComponentType componentType) {
         if (componentType == null) {
             return null;
         } else {
             final DeviceType deviceType = new DeviceType();
             deviceType.setName(componentType.getName());
             deviceType.setDescription(componentType.getDescription());
-            deviceType.setArtifacts(getArtifacts(componentType.getEntityArtifactList()));
+            deviceType.setArtifacts(Utils.emptyToNull(Utils.getArtifacts(componentType)));
             return deviceType;
         }
     }
-
-    private static List<Artifact> getArtifacts(List<org.openepics.discs.conf.ent.Artifact> entityArtifactList) {
-        return entityArtifactList.stream().map(Artifact::new).collect(Collectors.toList());
-     }
 }
