@@ -17,39 +17,42 @@
  */
 package org.openepics.discs.conf.jaxb;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlValue;
+
+import org.openepics.discs.conf.ent.Slot;
 
 /**
- * This is data transfer object representing a CCDB device type for JSON and XML serialization.
+ * This is data transfer object representing a CCDB installation slot for JSON and XML serialization. This object only carries
+ * basic information, like slot name.
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
-@XmlRootElement(name = "deviceType")
+@XmlRootElement(name = "name")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({Artifact.class})
-public class DeviceType {
+public class InstallationSlotName {
+    @XmlValue
     private String name;
-    private String description;
 
-    @XmlElementWrapper(name = "artifacts")
-    @XmlAnyElement(lax = true)
-    private List<Artifact> artifacts;
+    @XmlAttribute(name = "type")
+    private SlotType slotType;
 
-    public DeviceType() { }
+    public InstallationSlotName() {}
+
+    public InstallationSlotName(Slot slot) {
+        name = slot.getName();
+        slotType = slot.isHostingSlot() ? SlotType.SLOT : SlotType.CONTAINER;
+    }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public List<Artifact> getArtifacts() { return artifacts; }
-    public void setArtifacts(List<Artifact> artifacts) { this.artifacts = artifacts; }
+    public SlotType getSlotType() { return slotType; }
+    public void setSlotType(SlotType slotType) { this.slotType = slotType; }
 }
+
+

@@ -17,8 +17,6 @@
  */
 package org.openepics.discs.conf.jaxrs;
 
-import java.util.List;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -27,19 +25,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.openepics.discs.conf.jaxb.Device;
+import org.openepics.discs.conf.jaxb.lists.DeviceList;
 
 /**
  * This resource provides bulk and specific device data.
  *
  * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
-@Path("device")
+@Path("devices")
 public interface DeviceResource {
 
     /** @return returns all devices in the database. */
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public List<Device> getAllDevices();
+    public DeviceList getAllDevices();
 
     /**
      * Returns a specific device.

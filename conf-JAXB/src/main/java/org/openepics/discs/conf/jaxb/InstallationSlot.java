@@ -45,7 +45,7 @@ public class InstallationSlot {
     @XmlAnyElement(lax = true)
     private List<Artifact> artifacts;
 
-    @XmlElement private DeviceType deviceType;
+    @XmlElement private String deviceType;
 
     @XmlElementWrapper(name = "parents")
     @XmlElement(name = "parent")
@@ -83,8 +83,8 @@ public class InstallationSlot {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public DeviceType getDeviceType() { return deviceType; }
-    public void setDeviceType(DeviceType deviceType) { this.deviceType = deviceType; }
+    public String getDeviceType() { return deviceType; }
+    public void setDeviceType(String deviceType) { this.deviceType = deviceType; }
 
     public List<String> getParents() { return parents; }
     public void setParents(List<String> parents) { this.parents = parents; }

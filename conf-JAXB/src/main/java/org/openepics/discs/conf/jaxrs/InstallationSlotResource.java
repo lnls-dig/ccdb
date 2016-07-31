@@ -17,8 +17,6 @@
  */
 package org.openepics.discs.conf.jaxrs;
 
-import java.util.List;
-
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -29,17 +27,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.openepics.discs.conf.jaxb.InstallationSlot;
+import org.openepics.discs.conf.jaxb.lists.InstallationSlotList;
 
 /**
  * This resource provides bulk and specific installation slot data.
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
  */
-@Path("slot")
+@Path("slots")
 public interface InstallationSlotResource {
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public List<InstallationSlot> getInstallationSlots(
+    public InstallationSlotList getInstallationSlots(
             @DefaultValue("undefined") @QueryParam("deviceType") String deviceType);
 
     /**

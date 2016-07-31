@@ -36,9 +36,9 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({PropertyValue.class, Artifact.class})
 public class Device {
-    private String serialNumber;
+    private String inventoryId;
 
-    @XmlElement private DeviceType deviceType;
+    @XmlElement private String deviceType;
 
     @XmlElementWrapper(name = "properties")
     @XmlAnyElement(lax = true)
@@ -48,11 +48,11 @@ public class Device {
     @XmlAnyElement(lax = true)
     private List<Artifact> artifacts;
 
-    public String getSerialNumber() { return serialNumber; }
-    public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
+    public String getInventoryId() { return inventoryId; }
+    public void setInventoryId(String inventoryId) { this.inventoryId = inventoryId; }
 
-    public DeviceType getDeviceType() { return deviceType; }
-    public void setDeviceType(DeviceType deviceType) { this.deviceType = deviceType; }
+    public String getDeviceType() { return deviceType; }
+    public void setDeviceType(String deviceType) { this.deviceType = deviceType; }
 
     public List<PropertyValue> getProperties() { return properties; }
     public void setProperties(List<PropertyValue> properties) { this.properties = properties; }

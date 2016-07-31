@@ -19,6 +19,7 @@ package org.openepics.discs.conf.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -30,9 +31,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Artifact {
     private String name;
-    private boolean isURI;
     private String description;
     private String uri;
+    @XmlElement(name = "type") private ArtifactType artifactType;
+    private PropertyKind kind;
 
     /** Constructs empty Artifact. */
     public Artifact() {
@@ -46,7 +48,7 @@ public class Artifact {
     public Artifact(org.openepics.discs.conf.ent.Artifact entityArtifact) {
         this.name = entityArtifact.getName();
         this.description = entityArtifact.getDescription();
-        this.isURI = !entityArtifact.isInternal();
+        this.artifactType = entityArtifact.isInternal() ? ArtifactType.FILE : ArtifactType.URI;
         if (!entityArtifact.isInternal()) {
             this.uri = entityArtifact.getUri();
         }
@@ -55,12 +57,15 @@ public class Artifact {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public boolean isURI() { return isURI; }
-    public void setURI(boolean isURI) { this.isURI = isURI; }
+    public ArtifactType getType() { return artifactType; }
+    public void setType(ArtifactType artifactType) { this.artifactType = artifactType; }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
     public String getUri() { return uri; }
     public void setUri(String uri) { this.uri = uri; }
+
+    public PropertyKind getKind() { return kind; }
+    public void setKind(PropertyKind kind) { this.kind = kind; }
 }

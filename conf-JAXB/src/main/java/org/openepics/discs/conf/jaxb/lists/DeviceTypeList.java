@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2014 European Spallation Source
- * Copyright (c) 2014 Cosylab d.d.
+ * Copyright (c) 2016 European Spallation Source
+ * Copyright (c) 2016 Cosylab d.d.
  *
  * This file is part of Cable Database.
  * Cable Database is free software: you can redistribute it and/or modify it
@@ -15,31 +15,32 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
  */
-package org.openepics.discs.conf.jaxb;
+package org.openepics.discs.conf.jaxb.lists;
 
-import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.openepics.discs.conf.jaxb.DeviceType;
+
+import com.google.common.collect.Lists;
+
 /**
- * This is data transfer object representing a CCDB installation slot for JSON and XML serialization. This object only carries
- * basic information, like slot name.
- *
- * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
-@XmlRootElement(name = "slotNames")
+@XmlRootElement(name = "deviceTypes")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class InstallationSlotNames {    
-    @XmlElement(name = "name")
-    private List<String> names;
+public class DeviceTypeList {
 
-    public InstallationSlotNames() { this.names = new ArrayList<>(); }
-    public InstallationSlotNames(List<String> names) { this.names = names; }
-    
-    public List<String> getNames() { return names; }
+    @XmlElement(name = "deviceType")
+    private final List<DeviceType> deviceTypes;
+
+    public DeviceTypeList() { deviceTypes = Lists.newArrayList(); }
+    public DeviceTypeList(final List<DeviceType> deviceTypes) { this.deviceTypes = deviceTypes; }
+
+
+    public List<DeviceType> getDeviceTypes() { return deviceTypes; }
 }
-
-
