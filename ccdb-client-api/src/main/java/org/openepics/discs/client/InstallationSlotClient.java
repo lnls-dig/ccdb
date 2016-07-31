@@ -20,17 +20,16 @@
 package org.openepics.discs.client;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.Response;
 
 import org.openepics.discs.client.impl.ClosableResponse;
 import org.openepics.discs.client.impl.ResponseException;
 import org.openepics.discs.conf.jaxb.InstallationSlot;
+import org.openepics.discs.conf.jaxb.lists.InstallationSlotList;
 import org.openepics.discs.conf.jaxrs.InstallationSlotResource;
 
 /**
@@ -39,13 +38,13 @@ import org.openepics.discs.conf.jaxrs.InstallationSlotResource;
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>\
  * @author <a href="mailto:miroslav.pavleski@cosylab.com">Miroslav Pavleski</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
 
-class InstallationSlotClient implements
-        InstallationSlotResource {
+class InstallationSlotClient implements InstallationSlotResource {
     private static final Logger LOG = Logger.getLogger(InstallationSlot.class.getName());
 
-    private static final String PATH_SLOTS = "slot";
+    private static final String PATH_SLOTS = "slots";
 
     @Nonnull private final CCDBClient client;
 
@@ -58,17 +57,17 @@ class InstallationSlotClient implements
      * @return list of InstallationSlot
      */
     @Override
-    public List<InstallationSlot> getInstallationSlots(String deviceType) {
+    public InstallationSlotList getInstallationSlots(String deviceType) {
         LOG.fine("Invoking getInstallationSlots");
 
         final String url = client.buildUrl(PATH_SLOTS);
 
-        MultivaluedHashMap queryParams = new MultivaluedHashMap();
+        final MultivaluedHashMap<String, Object> queryParams = new MultivaluedHashMap<>();
         if (deviceType!=null) {
             queryParams.put("deviceType", Arrays.asList(deviceType));
         }
         try (final ClosableResponse response = client.getResponse(url, queryParams)) {
-            return response.readEntity(new GenericType<List<InstallationSlot>>(){});
+            return response.readEntity(InstallationSlotList.class);
         } catch (Exception e) {
             throw new ResponseException("Couldn't retrieve data from service at " + url + ".", e);
         }

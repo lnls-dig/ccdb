@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
 import org.openepics.discs.client.impl.ClosableResponse;
 import org.openepics.discs.client.impl.ResponseException;
 import org.openepics.discs.conf.jaxb.DeviceType;
+import org.openepics.discs.conf.jaxb.lists.DeviceTypeList;
 import org.openepics.discs.conf.jaxrs.DeviceTypeResource;
 
 /**
@@ -39,13 +39,14 @@ import org.openepics.discs.conf.jaxrs.DeviceTypeResource;
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
  * @author <a href="mailto:miroslav.pavleski@cosylab.com">Miroslav Pavleski</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
 
 class DeviceTypeClient implements DeviceTypeResource {
 
     private static final Logger LOG = Logger.getLogger(DeviceTypeClient.class.getName());
 
-    private static final String PATH_DEVICE_TYPES = "deviceType";
+    private static final String PATH_DEVICE_TYPES = "deviceTypes";
 
     @Nonnull private final CCDBClient client;
 
@@ -59,12 +60,12 @@ class DeviceTypeClient implements DeviceTypeResource {
      * @return {@link List} of all {@link DeviceType}s
      */
     @Override
-    public List<DeviceType> getAllDeviceTypes() {
+    public DeviceTypeList getAllDeviceTypes() {
         LOG.fine("Invoking getAllDeviceTypes");
 
         final String url = client.buildUrl(PATH_DEVICE_TYPES);
         try (final ClosableResponse response = client.getResponse(url)) {
-            return response.readEntity(new GenericType<List<DeviceType>>() {});
+            return response.readEntity(DeviceTypeList.class);
         } catch (Exception e) {
             throw new ResponseException("Couldn't retrieve data from service at " + url + ".", e);
         }
