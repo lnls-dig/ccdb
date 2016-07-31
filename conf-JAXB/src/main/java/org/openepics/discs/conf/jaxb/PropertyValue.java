@@ -34,7 +34,7 @@ public class PropertyValue {
     private String value;
     private String dataType;
     private String unit;
-    private PropertyKind propertyKind;
+    private PropertyKind kind;
 
     public PropertyValue() { }
 
@@ -50,6 +50,6 @@ public class PropertyValue {
     public String getUnit() { return unit; }
     public void setUnit(final String unit) { this.unit = unit; }
 
-    public PropertyKind getPropertyKind() { return propertyKind; }
-    public void setPropertyKind(final PropertyKind propertyKind) { this.propertyKind = propertyKind; }
+    public PropertyKind getKind() { return kind; }
+    public void setKind(final PropertyKind kind) { this.kind = kind; }
 }
