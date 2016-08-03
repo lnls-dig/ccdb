@@ -26,6 +26,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.openepics.discs.conf.jaxb.DeviceType;
 import org.openepics.discs.conf.jaxb.InstallationSlot;
 import org.openepics.discs.conf.jaxb.lists.InstallationSlotList;
 
@@ -36,6 +37,13 @@ import org.openepics.discs.conf.jaxb.lists.InstallationSlotList;
  */
 @Path("slots")
 public interface InstallationSlotResource {
+    /**
+     * This method returns all the {@link InstallationSlot}s in the database or their subset based on
+     * the {@link DeviceType}.
+     *
+     * @param deviceType optional {@link DeviceType} name
+     * @return {@link InstallationSlotList}
+     */
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public InstallationSlotList getInstallationSlots(

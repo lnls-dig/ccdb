@@ -39,15 +39,16 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.openepics.discs.client.impl.CCDBClientConfigException;
 import org.openepics.discs.client.impl.ClosableResponse;
-import org.openepics.discs.conf.jaxrs.DeviceTypeResource;
-import org.openepics.discs.conf.jaxrs.InstallationSlotNameResource;
-import org.openepics.discs.conf.jaxrs.InstallationSlotResource;
+import org.openepics.discs.conf.jaxrs.client.DeviceClient;
+import org.openepics.discs.conf.jaxrs.client.DeviceTypeClient;
+import org.openepics.discs.conf.jaxrs.client.InstallationSlotClient;
 
 /**
  * This is CCDB service client API that clients can use to access the service.
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
  * @author <a href="mailto:miroslav.pavleski@cosylab.com">Miroslav Pavleski</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
 
 public class CCDBClient {
@@ -232,15 +233,15 @@ public class CCDBClient {
     }
 
     /* FACTORY METHODS */
-    public DeviceTypeResource createDeviceTypeResource() {
-        return new DeviceTypeClient(this);
+    public DeviceTypeClient createDeviceTypeClient() {
+        return new DeviceTypeClientImpl(this);
     }
 
-    public InstallationSlotNameResource createInstallationSlotNameResource() {
-        return new InstallationSlotNameClient(this);
+    public InstallationSlotClient createInstallationSlotClient() {
+        return new InstallationSlotClientImpl(this);
     }
 
-    public InstallationSlotResource createInstallationSlotResource() {
-        return new InstallationSlotClient(this);
+    public DeviceClient createDeviceClient() {
+        return new DeviceClientImpl(this);
     }
 }
