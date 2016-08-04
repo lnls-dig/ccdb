@@ -299,13 +299,13 @@
                                     <p:menuitem value="Container" oncomplete="PF('addSlotDialog').show();"
                                             title="Add a Container to the Selected Container"
                                             actionListener="#{hierarchiesController.prepareContainerAddPopup}"
-                                            update=":addSlotForm" icon="ui-icon-folder-collapsed"
+                                            update=":addSlotForm:addSlotDialog" icon="ui-icon-folder-collapsed"
                                             disabled="#{hierarchiesController.multipleNodesSelected
                                                             or hierarchiesController.selectedNodeSlot.hostingSlot}" />
                                     <p:menuitem value="Installation Slot" oncomplete="PF('addSlotDialog').show();"
                                             title="Add an Instalaltion Slot to the Selected Item"
                                             actionListener="#{hierarchiesController.prepareInstallationSlotPopup}"
-                                            update=":addSlotForm" disabled="#{not hierarchiesController.singleNodeSelected}"
+                                            update=":addSlotForm:addSlotDialog" disabled="#{not hierarchiesController.singleNodeSelected}"
                                             icon="ui-icon-wrench" />
                                 </p:menuButton>
                             </div>

@@ -36,23 +36,35 @@
     
                     <p:row>
                         <p:column style="text-align: right">
-                            <p:outputLabel for="slotName" value="Installation slot name:" 
+                            <p:outputLabel value="Installation slot name:" 
                                 rendered="#{hierarchiesController.installationSlot}" />
                             <p:outputLabel for="containerName" value="Container name:" 
                                 rendered="#{not hierarchiesController.installationSlot}"/>
                         </p:column>
                         <p:column>
                             <h:panelGroup>
-                                <p:selectOneMenu id="slotName" value="#{hierarchiesController.name}" 
-                                        rendered="#{hierarchiesController.installationSlot}"
-                                        editable="#{not hierachiesController.restrictToConventionNames}"
-                                        filter="true" filterMatchMode="contains" tabindex="2" 
+                                <p:selectOneMenu id="slotNameEditable" value="#{hierarchiesController.name}" 
+                                        rendered="#{hierarchiesController.installationSlot 
+                                            and not hierarchiesController.restrictToConventionNames}"
+                                        editable="true" filter="true" filterMatchMode="contains" tabindex="2" 
                                         validator="#{hierarchiesController.validateInstallationSlot}" 
                                         required="true" requiredMessage="Please enter an installation slot name">
                                     <f:selectItem itemLabel="" itemValue="" />
                                     <f:selectItems value="#{hierarchiesController.namesForAutoComplete}"/>                                    
                                 </p:selectOneMenu>
-                                <p:message for="slotName" rendered="#{hierarchiesController.installationSlot}" />
+                                <p:message for="slotNameEditable" rendered="#{hierarchiesController.installationSlot}" />
+
+                                <p:selectOneMenu id="slotNameSelect" value="#{hierarchiesController.name}" 
+                                        rendered="#{hierarchiesController.installationSlot 
+                                            and hierarchiesController.restrictToConventionNames}"
+                                        editable="false" filter="true" filterMatchMode="contains" tabindex="2" 
+                                        validator="#{hierarchiesController.validateInstallationSlot}" 
+                                        required="true" requiredMessage="Please enter an installation slot name">
+                                    <f:selectItem itemLabel="Select One" itemValue="" noSelectionOption="true" />
+                                    <f:selectItems value="#{hierarchiesController.namesForAutoComplete}"/>                                    
+                                </p:selectOneMenu>
+                                <p:message for="slotNameSelect" rendered="#{hierarchiesController.installationSlot}" />
+
 
                                 <p:inputText id="containerName" rendered="#{not hierarchiesController.installationSlot}"
                                         value="#{hierarchiesController.name}" tabindex="2"
