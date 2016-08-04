@@ -38,10 +38,10 @@
                     </h:panelGroup>
                     
                     <h:outputLabel value="Batch:" for="batchCreation" rendered="#{batchCreation}" />
-                    <h:selectBooleanCheckbox id="batchCreation" value="#{devicesController.batchCreation}" 
+                    <p:selectBooleanCheckbox id="batchCreation" value="#{devicesController.batchCreation}" 
                             rendered="#{batchCreation}" tabindex="3">
                         <p:ajax update=":#{formId}:startSpinner :#{formId}:endSpinner :#{formId}:zeroesSpinner" />
-                    </h:selectBooleanCheckbox>
+                    </p:selectBooleanCheckbox>
     
                     <h:outputLabel value="Start {i}:" for="startSpinner" rendered="#{batchCreation}" />
                     <h:panelGroup rendered="#{batchCreation}">
