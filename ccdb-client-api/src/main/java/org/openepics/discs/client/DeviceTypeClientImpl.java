@@ -62,7 +62,7 @@ class DeviceTypeClientImpl implements DeviceTypeClient {
      */
     @Override
     public List<DeviceType> getAllDeviceTypes() {
-        LOG.fine("Invoking getAllDeviceTypes");
+        LOG.fine("Invoking getAllDeviceTypes.");
 
         final String url = client.buildUrl(PATH_DEVICE_TYPES);
         try (final ClosableResponse response = client.getResponse(url)) {
@@ -83,7 +83,7 @@ class DeviceTypeClientImpl implements DeviceTypeClient {
      */
     @Override
     public DeviceType getDeviceType(String name) {
-        LOG.fine("Invoking getDeviceType");
+        LOG.fine("Invoking getDeviceType. name=" + name);
 
         final String url = client.buildUrl(PATH_DEVICE_TYPES, name);
         try (final ClosableResponse response = client.getResponse(url)) {
@@ -103,7 +103,7 @@ class DeviceTypeClientImpl implements DeviceTypeClient {
      */
     @Override
     public InputStream getAttachment(String name, String fileName) {
-        LOG.fine("Invoking getAttachment");
+        LOG.fine("Invoking getAttachment. name=" + name + ", fileName" + fileName);
 
         final String url = client.buildUrl(PATH_DEVICE_TYPES, name, "download", fileName);
         try (final ClosableResponse response = client.getResponse(url)) {

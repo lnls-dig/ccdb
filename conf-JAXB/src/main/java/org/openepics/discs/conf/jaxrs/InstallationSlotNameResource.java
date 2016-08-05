@@ -39,5 +39,5 @@ public interface InstallationSlotNameResource {
      */
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public InstallationSlotNameList getAllInstallationSlotNames(@QueryParam("type") String deviceTypeName);
+    public InstallationSlotNameList getAllInstallationSlotNames(@QueryParam("deviceType") String deviceTypeName);
 }

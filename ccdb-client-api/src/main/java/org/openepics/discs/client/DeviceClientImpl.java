@@ -54,7 +54,7 @@ public class DeviceClientImpl implements DeviceClient {
      */
     @Override
     public Device getDevice(String inventoryId) {
-        LOG.fine("Invoking getDevice");
+        LOG.fine("Invoking getDevice. inventoryId=" + inventoryId);
 
         final String url = client.buildUrl(PATH_DEVICES, inventoryId);
         try (final ClosableResponse response = client.getResponse(url)) {
@@ -66,7 +66,7 @@ public class DeviceClientImpl implements DeviceClient {
 
     @Override
     public InputStream getAttachment(String name, String fileName) {
-        LOG.fine("Invoking getAttachment");
+        LOG.fine("Invoking getAttachment. name=" + name + ", fileName=" + fileName);
 
         final String url = client.buildUrl(PATH_DEVICES, name, "download", fileName);
         try (final ClosableResponse response = client.getResponse(url)) {

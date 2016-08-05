@@ -50,6 +50,8 @@ class InstallationSlotClientImpl implements InstallationSlotClient {
     private static final String PATH_SLOTS = "slots";
     private static final String PATH_SLOT_NAMES = "slotNames";
 
+    private static final String QUERY_PARAM_DEVICE_TYPE = "deviceType";
+
     @Nonnull private final CCDBClient client;
 
     InstallationSlotClientImpl(CCDBClient client) { this.client = client; }
@@ -67,13 +69,13 @@ class InstallationSlotClientImpl implements InstallationSlotClient {
      */
     @Override
     public List<InstallationSlot> getInstallationSlots(String deviceType) {
-        LOG.fine("Invoking getInstallationSlots");
+        LOG.fine("Invoking getInstallationSlots. deviceType=" + deviceType);
 
         final String url = client.buildUrl(PATH_SLOTS);
 
         final MultivaluedHashMap<String, Object> queryParams = new MultivaluedHashMap<>();
         if (deviceType != null) {
-            queryParams.put("deviceType", Arrays.asList(deviceType));
+            queryParams.put(QUERY_PARAM_DEVICE_TYPE, Arrays.asList(deviceType));
         }
         try (final ClosableResponse response = client.getResponse(url, queryParams)) {
             return response.readEntity(InstallationSlotList.class).getInstallationSlots();
@@ -87,7 +89,7 @@ class InstallationSlotClientImpl implements InstallationSlotClient {
      */
     @Override
     public InstallationSlot getInstallationSlot(String name) {
-        LOG.fine("Invoking getInstallationSlot");
+        LOG.fine("Invoking getInstallationSlot. name=" + name);
 
         final String url = client.buildUrl(PATH_SLOTS, name);
         try (final ClosableResponse response = client.getResponse(url)) {
@@ -102,7 +104,7 @@ class InstallationSlotClientImpl implements InstallationSlotClient {
      */
     @Override
     public InputStream getAttachment(String name, String fileName) {
-        LOG.fine("Invoking getAttachment");
+        LOG.fine("Invoking getAttachment. name=" + name + ", fileName=" + fileName);
 
         final String url = client.buildUrl(PATH_SLOTS, name, "download", fileName);
         try (final ClosableResponse response = client.getResponse(url)) {
@@ -122,11 +124,16 @@ class InstallationSlotClientImpl implements InstallationSlotClient {
      */
     @Override
     public List<InstallationSlotName> getAllInstallationSlotNames(String deviceTypeName) {
-        LOG.fine("Invoking getAllInstallationSlotNames.");
+        LOG.fine("Invoking getAllInstallationSlotNames. deviceTypeName=" + deviceTypeName);
 
-        final String url = (deviceTypeName != null) ? client.buildUrl(PATH_SLOT_NAMES, deviceTypeName)
-                                                                    : client.buildUrl(PATH_SLOT_NAMES);
-        try (final ClosableResponse response = client.getResponse(url)) {
+        final String url = client.buildUrl(PATH_SLOT_NAMES);
+
+        final MultivaluedHashMap<String, Object> queryParams = new MultivaluedHashMap<>();
+        if (deviceTypeName != null) {
+            queryParams.put(QUERY_PARAM_DEVICE_TYPE, Arrays.asList(deviceTypeName));
+        }
+
+        try (final ClosableResponse response = client.getResponse(url, queryParams)) {
             return response.readEntity(InstallationSlotNameList.class).getNames();
         } catch (Exception e) {
             throw new ResponseException("Couldn't retrieve data from service at " + url + ".", e);
