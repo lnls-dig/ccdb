@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -35,6 +37,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.json.JsonObject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.openepics.discs.conf.dl.annotations.DataTypeLoader;
 import org.openepics.discs.conf.dl.common.DataLoader;
@@ -51,13 +54,16 @@ import org.openepics.discs.conf.ui.lazymodels.CCDBLazyModel;
 import org.openepics.discs.conf.ui.lazymodels.DataTypeLazyModel;
 import org.openepics.discs.conf.ui.util.UiUtility;
 import org.openepics.discs.conf.util.BuiltInDataType;
+import org.openepics.discs.conf.util.Conversion;
 import org.openepics.discs.conf.util.Utility;
 import org.openepics.discs.conf.views.UserEnumerationView;
 import org.openepics.seds.api.datatypes.SedsEnum;
 import org.openepics.seds.core.Seds;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.LazyDataModel;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Lists;
@@ -71,6 +77,7 @@ import com.google.common.collect.Lists;
 @ViewScoped
 public class DataTypeManager extends AbstractExcelSingleFileImportUI implements Serializable, SimpleTableExporter {
     private static final long serialVersionUID = -7538356350403365152L;
+    private static final Logger LOGGER = Logger.getLogger(DataTypeManager.class.getCanonicalName());
 
     @Inject private DataTypeEJB dataTypeEJB;
     @Inject private DataLoaderHandler dataLoaderHandler;
@@ -135,10 +142,23 @@ public class DataTypeManager extends AbstractExcelSingleFileImportUI implements 
     @PostConstruct
     public void init() {
         super.init();
+        final String dataTypeIdStr = ((HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().
+                getRequest()).getParameter("id");
         try {
             simpleTableExporterDialog = new ExportSimpleEnumTableDialog();
             prepareBuiltInDataTypes();
             refreshUserDataTypes();
+            if (!Strings.isNullOrEmpty(dataTypeIdStr)) {
+                final long dataTypeId = Long.parseLong(dataTypeIdStr);
+                final DataType dataType = dataTypeEJB.findById(dataTypeId);
+                if (dataType != null) {
+                    RequestContext.getCurrentInstance().execute("CCDB.config.jumpToElementOnLoad = true;"
+                            + "selectEntityInTable(" + dataTypeId + ", 'enumsTableVar');");
+                }
+            }
+        } catch (NumberFormatException e) {
+            // just log
+            LOGGER.log(Level.WARNING, "URL contained strange dataType ID: " + dataTypeIdStr );
         } catch(Exception e) {
             throw new UIException("Device type display initialization fialed: " + e.getMessage(), e);
         }
@@ -320,7 +340,22 @@ public class DataTypeManager extends AbstractExcelSingleFileImportUI implements 
 
     /** @return a list of all {@link DataType}s */
     public List<DataType> getDataTypes() {
-        return ImmutableList.copyOf(dataTypeEJB.findAll());
+        final List<DataType> sortedDataTypes = dataTypeEJB.findAll().stream().
+                sorted((dt1, dt2) ->
+                    {
+                        BuiltInDataType bidt = Conversion.getBuiltInDataType(dt1);
+                        final long dt1Id = (bidt == BuiltInDataType.USER_DEFINED_ENUM)
+                                            ? dt1.getId() + BuiltInDataType.values().length : bidt.ordinal();
+                        bidt = Conversion.getBuiltInDataType(dt2);
+                        final long dt2Id = (bidt == BuiltInDataType.USER_DEFINED_ENUM)
+                                ? dt2.getId() + BuiltInDataType.values().length : bidt.ordinal();
+
+                        final long diff = dt1Id - dt2Id;
+                        return (diff < Integer.MIN_VALUE) ? Integer.MIN_VALUE :
+                            ((diff > Integer.MAX_VALUE) ? Integer.MAX_VALUE : Long.valueOf(diff).intValue());
+                    }).
+                collect(Collectors.toList());
+        return ImmutableList.copyOf(sortedDataTypes);
     }
 
     /** @return the lazy loading data model */

@@ -34,6 +34,7 @@ import org.openepics.discs.conf.ent.PropertyValueUniqueness;
 import org.openepics.discs.conf.ent.Unit;
 import org.openepics.discs.conf.ui.util.UiUtility;
 import org.openepics.discs.conf.util.BuiltInDataType;
+import org.openepics.discs.conf.util.Conversion;
 
 /**
  * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
@@ -184,5 +185,11 @@ public class PropertyView implements Serializable {
             throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, UiUtility.MESSAGE_SUMMARY_ERROR,
                     "Error in name: \"{i}\""));
         }
+    }
+
+    /** @return <code>true</code> if property has a user defined data type, <code>false</code> otherwise */
+    public boolean isUserDefinedDataType(){
+        return getDataType() == null ? false
+                                : Conversion.getBuiltInDataType(getDataType()) == BuiltInDataType.USER_DEFINED_ENUM;
     }
 }

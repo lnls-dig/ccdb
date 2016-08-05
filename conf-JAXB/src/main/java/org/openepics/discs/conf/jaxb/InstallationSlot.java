@@ -32,15 +32,20 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * This is data transfer object representing a CCDB installation slot for JSON and XML serialization.
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
-@XmlRootElement(name = "installationSlot")
+@XmlRootElement(name = "slot")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({PropertyValue.class})
+@XmlSeeAlso({PropertyValue.class, Artifact.class})
 public class InstallationSlot {
     private String name;
     private String description;
 
-    @XmlElement private DeviceType deviceType;
+    @XmlElementWrapper(name = "artifacts")
+    @XmlAnyElement(lax = true)
+    private List<Artifact> artifacts;
+
+    @XmlElement private String deviceType;
 
     @XmlElementWrapper(name = "parents")
     @XmlElement(name = "parent")
@@ -78,8 +83,8 @@ public class InstallationSlot {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public DeviceType getDeviceType() { return deviceType; }
-    public void setDeviceType(DeviceType deviceType) { this.deviceType = deviceType; }
+    public String getDeviceType() { return deviceType; }
+    public void setDeviceType(String deviceType) { this.deviceType = deviceType; }
 
     public List<String> getParents() { return parents; }
     public void setParents(List<String> parents) { this.parents = parents; }
@@ -101,4 +106,7 @@ public class InstallationSlot {
 
     public List<PropertyValue> getProperties() { return properties; }
     public void setProperties(List<PropertyValue> properties) { this.properties = properties; }
+
+    public List<Artifact> getArtifacts() { return artifacts; }
+    public void setArtifacts(List<Artifact> artifacts) { this.artifacts = artifacts; }
 }

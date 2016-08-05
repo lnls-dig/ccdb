@@ -29,6 +29,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.openepics.discs.conf.auditlog.Audit;
 import org.openepics.discs.conf.ent.AlignmentPropertyValue;
 import org.openepics.discs.conf.ent.ComptypePropertyValue;
 import org.openepics.discs.conf.ent.DataType;
@@ -40,7 +41,10 @@ import org.openepics.discs.conf.ent.PropertyValue;
 import org.openepics.discs.conf.ent.SlotPropertyValue;
 import org.openepics.discs.conf.ent.fields.EnumFields;
 import org.openepics.discs.conf.security.Authorized;
+import org.openepics.discs.conf.util.BuiltInDataType;
 import org.openepics.discs.conf.util.CRUDOperation;
+import org.openepics.discs.conf.util.Conversion;
+import org.openepics.discs.conf.util.ProtectedDataTypeModificationException;
 import org.openepics.discs.conf.util.SortOrder;
 import org.openepics.discs.conf.util.Utility;
 
@@ -61,6 +65,42 @@ public class DataTypeEJB extends DAO<DataType> {
         return DataType.class;
     }
 
+    @CRUDOperation(operation=EntityTypeOperation.CREATE)
+    @Audit
+    @Authorized
+    @Override
+    public void add(DataType entity) {
+        Preconditions.checkNotNull(entity);
+        if (isBuiltInDataType(entity)) {
+            throw new ProtectedDataTypeModificationException("Cannot add a built-in data type.");
+        }
+        super.add(entity);
+    }
+
+    @CRUDOperation(operation=EntityTypeOperation.DELETE)
+    @Audit
+    @Authorized
+    @Override
+    public void delete(DataType entity) {
+        Preconditions.checkNotNull(entity);
+        if (isBuiltInDataType(entity)) {
+            throw new ProtectedDataTypeModificationException("Cannot delete a built-in data type.");
+        }
+        super.delete(entity);
+    }
+
+    @CRUDOperation(operation=EntityTypeOperation.UPDATE)
+    @Audit
+    @Authorized
+    @Override
+    public void save(DataType entity) {
+        Preconditions.checkNotNull(entity);
+        if (isBuiltInDataType(entity)) {
+            throw new ProtectedDataTypeModificationException("Cannot modify a built-in data type.");
+        }
+        super.save(entity);
+    }
+
     /**
      * The method checks whether a data type is used in any property value in the database.
      *
@@ -70,7 +110,6 @@ public class DataTypeEJB extends DAO<DataType> {
     public boolean isDataTypeUsed(final DataType dataType) {
         return isDataTypeUsed(dataType, false);
     }
-
 
     /**
      * The method checks whether a data type is used in any property value or {@link Property} in the database.
@@ -224,5 +263,9 @@ public class DataTypeEJB extends DAO<DataType> {
         }
 
         return predicates.toArray(new Predicate[] {});
+    }
+
+    private boolean isBuiltInDataType(final DataType dataType) {
+        return Conversion.getBuiltInDataType(dataType) != BuiltInDataType.USER_DEFINED_ENUM;
     }
 }

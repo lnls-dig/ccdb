@@ -231,7 +231,12 @@ public class HierarchiesController extends AbstractExcelSingleFileImportUI imple
         detectNamingStatus = "TRUE".equalsIgnoreCase(namingStatus);
 
         final String restrictNames = properties.getProperty(AppProperties.RESTRICT_TO_CONVENTION_NAMES);
-        restrictToConventionNames = !detectNamingStatus && "TRUE".equalsIgnoreCase(restrictNames);
+        restrictToConventionNames = detectNamingStatus && "TRUE".equalsIgnoreCase(restrictNames);
+
+        LOGGER.log(Level.FINE, AppProperties.NAMING_DETECT_STATUS + ": " + namingStatus);
+        LOGGER.log(Level.FINE, AppProperties.RESTRICT_TO_CONVENTION_NAMES + ": " + restrictNames);
+        LOGGER.log(Level.FINEST, "detectNamingStatus: " + Boolean.toString(detectNamingStatus));
+        LOGGER.log(Level.FINEST, "restrictToConventionNames: " + Boolean.toString(restrictToConventionNames));
 
         nameList = detectNamingStatus ? names.getAllNames() : new HashMap<>();
         namesForAutoComplete = ImmutableList.copyOf(nameList.keySet());

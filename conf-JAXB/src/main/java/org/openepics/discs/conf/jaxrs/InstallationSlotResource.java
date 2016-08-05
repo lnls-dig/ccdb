@@ -17,45 +17,62 @@
  */
 package org.openepics.discs.conf.jaxrs;
 
-import java.util.List;
 import javax.ws.rs.DefaultValue;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import org.openepics.discs.conf.jaxb.DeviceType;
 import org.openepics.discs.conf.jaxb.InstallationSlot;
+import org.openepics.discs.conf.jaxb.lists.InstallationSlotList;
 
 /**
  * This resource provides bulk and specific installation slot data.
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
  */
-@Path("slot")
+@Path("slots")
 public interface InstallationSlotResource {
+    /**
+     * This method returns all the {@link InstallationSlot}s in the database or their subset based on
+     * the {@link DeviceType}.
+     *
+     * @param deviceType optional {@link DeviceType} name
+     * @return {@link InstallationSlotList}
+     */
     @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML}) 
-    public List<InstallationSlot> getInstallationSlots(@DefaultValue("undefined") 
-        @QueryParam("deviceType") String deviceType);    
-    
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public InstallationSlotList getInstallationSlots(
+            @DefaultValue("undefined") @QueryParam("deviceType") String deviceType);
+
     /**
      * Returns a specific installation slot
      *
-     * @param name the name of the installation slot to retrieve
+     * @param name
+     *            the name of the installation slot to retrieve
      * @return the installation slot instance data
      */
     @GET
     @Path("{name}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public InstallationSlot getInstallationSlot(@PathParam("name") String name);
-    
+
     /**
-     * Retrieves a list of slots of a given device type
-     * 
-     * @param deviceType the name of the device type to retrieve slots for
-     * @return list of slots of given device 
-     */    
+     * Returns a specific installation slot artifact file.
+     *
+     * @param name
+     *            the name of the installation slot from which to retrieve
+     *            artifact file.
+     * @param fileName
+     *            the name of the artifact file to retrieve.
+     * @return the installation slot artifact file
+     */
+    @GET
+    @Path("{name}/download/{fileName}")
+    @Produces({ MediaType.MEDIA_TYPE_WILDCARD })
+    public Response getAttachment(@PathParam("name") String name, @PathParam("fileName") String fileName);
 }

@@ -281,15 +281,15 @@ public class RelationshipController implements Serializable {
         editExistingRelationship = false;
         // clear the previous dialog selection in case the dialog was already used before
         editedRelationshipView = new SlotRelationshipView(null, hierarchiesController.getSelectedNodeSlot());
-        editedRelationshipView.setRelationshipName(SlotRelationName.CONTAINS.toString());
 
         // modify relationship types drop down menu
         if (hierarchiesController.getSelectedNodeSlot().isHostingSlot()) {
             relationshipTypesForDialog = ImmutableList.copyOf(slotRelationBySlotRelationStringName.keySet().iterator());
-
+            editedRelationshipView.setRelationshipName(SlotRelationName.CONTROLS.toString());
         } else {
             relationshipTypesForDialog = ImmutableList.of(SlotRelationName.CONTAINS.toString(),
                     SlotRelationName.CONTAINS.inverseName());
+            editedRelationshipView.setRelationshipName(SlotRelationName.CONTAINS.toString());
         }
     }
 

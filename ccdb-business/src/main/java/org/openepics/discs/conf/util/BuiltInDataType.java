@@ -28,6 +28,8 @@ package org.openepics.discs.conf.util;
  *
  */
 public enum BuiltInDataType {
+    /** Standard boolean: TRUE / FALSE */
+    BOOLEAN(BuiltInDataType.BOOLEAN_NAME),
     /** The property value can be a single signed 32-bit integer number */
     INTEGER(BuiltInDataType.INT_NAME),
     /** The property value can be a single signed double precision number */
@@ -47,12 +49,13 @@ public enum BuiltInDataType {
     /** The property value can be a string value selected out of a user-defined list of possible values (enumeration). */
     USER_DEFINED_ENUM(BuiltInDataType.ENUM_NAME);
 
+    public static final String BOOLEAN_NAME = "Boolean";
     public static final String INT_NAME = "Integer";
     public static final String DBL_NAME = "Double";
     public static final String STR_NAME = "String";
     public static final String TIMESTAMP_NAME = "Timestamp";
-    public static final String INT_VECTOR_NAME = "Integers Vector";
-    public static final String DBL_VECTOR_NAME = "Doubles Vector";
+    public static final String INT_VECTOR_NAME = "Integers List";
+    public static final String DBL_VECTOR_NAME = "Doubles List";
     public static final String STRING_LIST_NAME = "Strings List";
     public static final String DBL_TABLE_NAME = "Doubles Table";
     public static final String ENUM_NAME = "Enumeration";

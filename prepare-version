@@ -1,0 +1,4 @@
+#!/bin/sh
+VERSION=`grep "app.version" pom.xml | sed 's/.*<app.version>//' | sed 's/<\/app.version>//'`
+echo sonar.projectVersion=$VERSION > sonar-generated.properties
+

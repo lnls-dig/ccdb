@@ -17,6 +17,7 @@
  */
 package org.openepics.discs.conf.webservice;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -27,9 +28,12 @@ import javax.ws.rs.core.Application;
  * This represents the JAX-RS application which hosts all REST resources of the CCDB.
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
 @ApplicationPath("/")
-public class CcdbRestService extends Application {
+public class CcdbRestService extends Application implements Serializable {
+    private static final long serialVersionUID = 6813705813230928697L;
+
     @Override
     public Set<Class<?>> getClasses() { // NOSONAR generic wildcard types part of the framework
         return getRestResourceClasses();
@@ -37,7 +41,6 @@ public class CcdbRestService extends Application {
 
     private Set<Class<?>> getRestResourceClasses() {  // NOSONAR generic wildcard types part of the framework
         return new java.util.HashSet<Class<?>>(Arrays.asList(DeviceTypeResourceImpl.class,
-                InstallationSlotNameResourceImpl.class, InstallationSlotResourceImpl.class));
+                InstallationSlotNameResourceImpl.class, InstallationSlotResourceImpl.class, DeviceResourceImpl.class));
     }
-
 }

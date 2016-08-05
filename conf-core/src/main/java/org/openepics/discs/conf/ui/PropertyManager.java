@@ -364,7 +364,8 @@ public class PropertyManager extends AbstractExcelSingleFileImportUI implements
 
     /** @return the set of possible uniqueness values to show in the drop-down control */
     public List<PropertyValueUniqueness> getUniqunessValues() {
-        return ImmutableList.copyOf(PropertyValueUniqueness.values());
+        return ImmutableList.copyOf(Lists.newArrayList(PropertyValueUniqueness.NONE, PropertyValueUniqueness.TYPE,
+                                                                                    PropertyValueUniqueness.UNIVERSAL));
     }
 
     /** Validates the {@link Property} name for uniqueness.

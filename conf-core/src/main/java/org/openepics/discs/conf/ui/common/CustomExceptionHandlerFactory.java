@@ -20,24 +20,24 @@ package org.openepics.discs.conf.ui.common;
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExceptionHandlerFactory;
 
+import org.omnifaces.exceptionhandler.FullAjaxExceptionHandlerFactory;
+
 /**
  * A factory for the CustomExceptionHandler. Used to define a global JSF exception handler through faces-config.xml.
  *
  * @author <a href="mailto:marko.kolar@cosylab.com">Marko Kolar</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
-public class CustomExceptionHandlerFactory extends ExceptionHandlerFactory {
-
-    private final ExceptionHandlerFactory parent;
+public class CustomExceptionHandlerFactory extends FullAjaxExceptionHandlerFactory {
 
     /** A new JSF exception handler factory
-     * @param parent the original JSF exception handler factory
+     * @param wrapped the original JSF exception handler factory
      */
-    public CustomExceptionHandlerFactory(ExceptionHandlerFactory parent) {
-        this.parent = parent;
+    public CustomExceptionHandlerFactory(ExceptionHandlerFactory wrapped) {
+        super(wrapped);
     }
 
     @Override public ExceptionHandler getExceptionHandler() {
-        return new CustomExceptionHandler(parent.getExceptionHandler());
+        return new CustomExceptionHandler(super.getWrapped().getExceptionHandler());
     }
-
 }

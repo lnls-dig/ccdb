@@ -19,16 +19,18 @@
  */
 package org.openepics.discs.client;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
-import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
 
 import org.openepics.discs.client.impl.ClosableResponse;
 import org.openepics.discs.client.impl.ResponseException;
 import org.openepics.discs.conf.jaxb.DeviceType;
-import org.openepics.discs.conf.jaxrs.DeviceTypeResource;
+import org.openepics.discs.conf.jaxb.lists.DeviceTypeList;
+import org.openepics.discs.conf.jaxrs.client.DeviceTypeClient;
 
 /**
  * This is CCDB service clientdataType parser that is used to get data from server.
@@ -38,21 +40,21 @@ import org.openepics.discs.conf.jaxrs.DeviceTypeResource;
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
  * @author <a href="mailto:miroslav.pavleski@cosylab.com">Miroslav Pavleski</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
 
-class DeviceTypeClient 
-    implements DeviceTypeResource {
-    
-    private static final Logger LOG = Logger.getLogger(DeviceTypeClient.class.getName());
-    
-    private static final String PATH_DEVICE_TYPES = "deviceType";
+class DeviceTypeClientImpl implements DeviceTypeClient {
+
+    private static final Logger LOG = Logger.getLogger(DeviceTypeClientImpl.class.getCanonicalName());
+
+    private static final String PATH_DEVICE_TYPES = "deviceTypes";
 
     @Nonnull private final CCDBClient client;
 
-    DeviceTypeClient(CCDBClient client) { this.client = client; }
+    DeviceTypeClientImpl(CCDBClient client) { this.client = client; }
 
     /**
-     * Requests a {@link List} of all {@link DeviceType}s from the REST service.
+     * Requests a {@link DeviceTypeList} containing a {@link List} of all {@link DeviceType}s from the REST service.
      *
      * @throws ResponseException if data couldn't be retrieved
      *
@@ -60,11 +62,11 @@ class DeviceTypeClient
      */
     @Override
     public List<DeviceType> getAllDeviceTypes() {
-        LOG.fine("Invoking getAllDeviceTypes");
+        LOG.fine("Invoking getAllDeviceTypes.");
 
         final String url = client.buildUrl(PATH_DEVICE_TYPES);
         try (final ClosableResponse response = client.getResponse(url)) {
-            return response.readEntity(new GenericType<List<DeviceType>>() {});
+            return response.readEntity(DeviceTypeList.class).getDeviceTypes();
         } catch (Exception e) {
             throw new ResponseException("Couldn't retrieve data from service at " + url + ".", e);
         }
@@ -81,11 +83,31 @@ class DeviceTypeClient
      */
     @Override
     public DeviceType getDeviceType(String name) {
-        LOG.fine("Invoking getDeviceType");
+        LOG.fine("Invoking getDeviceType. name=" + name);
 
         final String url = client.buildUrl(PATH_DEVICE_TYPES, name);
         try (final ClosableResponse response = client.getResponse(url)) {
             return response.readEntity(DeviceType.class);
+        } catch (Exception e) {
+            throw new ResponseException("Couldn't retrieve data from service at " + url + ".", e);
+        }
+    }
+
+    /**
+     * Requests particular file attachment from the REST service. To read the attachment file use
+     * {@link Response#readEntity(Class)}: <code>Reponse.readEntity(InputStream.class)</code>.
+     *
+     * @param name the {@link DeviceType}
+     * @param fileName the name of the attachment
+     * @return {@link Response}
+     */
+    @Override
+    public InputStream getAttachment(String name, String fileName) {
+        LOG.fine("Invoking getAttachment. name=" + name + ", fileName" + fileName);
+
+        final String url = client.buildUrl(PATH_DEVICE_TYPES, name, "download", fileName);
+        try (final ClosableResponse response = client.getResponse(url)) {
+            return response.readEntity(InputStream.class);
         } catch (Exception e) {
             throw new ResponseException("Couldn't retrieve data from service at " + url + ".", e);
         }
