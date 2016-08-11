@@ -17,27 +17,29 @@
  */
 package org.openepics.discs.ccdb.jaxb;
 
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * This is data transfer object representing a CCDB device type for JSON and XML serialization.
+ * This is data transfer object representing a CCDB installation slot for JSON and XML serialization. This object only carries
+ * basic information, like slot name.
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
  */
-@XmlRootElement(name = "deviceType")
+@XmlRootElement(name = "slotNames")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DeviceType {
-    private String name;
-    private String description;
+public class InstallationSlotNames {    
+    @XmlElement(name = "name")
+    private List<String> names;
 
-    public DeviceType() { }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public InstallationSlotNames() { this.names = new ArrayList<>(); }
+    public InstallationSlotNames(List<String> names) { this.names = names; }
+    
+    public List<String> getNames() { return names; }
 }
+
+

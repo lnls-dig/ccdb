@@ -22,34 +22,28 @@ import javax.ws.rs.DefaultValue;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.openepics.discs.ccdb.jaxb.SlotReportEntry;
 
-import org.openepics.discs.ccdb.jaxb.DeviceType;
 
 /**
- * This resource provides bulk and specific device type data.
+ * Path: a ordered list of elements.
  *
- * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
+ * @author <a href="mailto:vuppala@frib.msu.edu">Vasu Vuppala</a>
  */
-@Path("deviceType")
-public interface DeviceTypeResource {
-    
-    /** @return returns all device types in the database. */
-    @GET
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<DeviceType> searchDeviceTypes(@DefaultValue("") @QueryParam("name") String query);
-
+@Path("report")
+public interface ReportResource {
     /**
-     * Returns a specific device type.
-     *
-     * @param name the name of the device type to retrieve
-     * @return the device type instance data
+     * Paths in the layout
+     * 
+     * @param prefix prefix of slot name
+     * @return all paths from start to end
      */
     @GET
-    @Path("{name}")
+    @Path("status")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public DeviceType getDeviceType(@PathParam("name") String name);
+    public List<SlotReportEntry> getSlotStatus(
+        @DefaultValue("") @QueryParam("prefix") String prefix);   
 }

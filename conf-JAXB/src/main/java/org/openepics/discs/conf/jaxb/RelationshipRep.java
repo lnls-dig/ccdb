@@ -17,27 +17,43 @@
  */
 package org.openepics.discs.ccdb.jaxb;
 
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * This is data transfer object representing a CCDB device type for JSON and XML serialization.
+ * Representation of a relationship.
  *
- * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
+ * @author <a href="mailto:vuppala@msu.edu">Vasu Vuppala</a>
  */
-@XmlRootElement(name = "deviceType")
+@XmlRootElement(name = "status")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DeviceType {
-    private String name;
-    private String description;
+public class RelationshipRep {
+   private String name; // relationship name
+   private String slot; // related slot
+    
+    public RelationshipRep() { }
 
-    public DeviceType() { }
+    public RelationshipRep(String name, String slot) {
+        this.name = name;
+        this.slot  = slot;
+    }
+    // -- getters and setters
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSlot() {
+        return slot;
+    }
+
+    public void setSlot(String slot) {
+        this.slot = slot;
+    }
+
 }

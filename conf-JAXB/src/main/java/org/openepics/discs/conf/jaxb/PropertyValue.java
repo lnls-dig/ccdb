@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
  */
-package org.openepics.discs.conf.jaxb;
+package org.openepics.discs.ccdb.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -27,14 +27,14 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
  * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
-@XmlRootElement(name = "property")
+@XmlRootElement(name = "propertyValue")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PropertyValue {
     private String name;
     private String value;
     private String dataType;
     private String unit;
-    private PropertyKind kind;
+    private PropertyKind propertyKind;
 
     public PropertyValue() { }
 
@@ -50,6 +50,6 @@ public class PropertyValue {
     public String getUnit() { return unit; }
     public void setUnit(final String unit) { this.unit = unit; }
 
-    public PropertyKind getKind() { return kind; }
-    public void setKind(final PropertyKind kind) { this.kind = kind; }
+    public PropertyKind getPropertyKind() { return propertyKind; }
+    public void setPropertyKind(final PropertyKind propertyKind) { this.propertyKind = propertyKind; }
 }

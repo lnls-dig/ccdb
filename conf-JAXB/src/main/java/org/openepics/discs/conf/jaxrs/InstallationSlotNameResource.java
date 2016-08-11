@@ -15,7 +15,9 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
  */
-package org.openepics.discs.conf.jaxrs;
+package org.openepics.discs.ccdb.jaxrs;
+
+import org.openepics.discs.ccdb.jaxb.InstallationSlotNames;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -23,21 +25,19 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.openepics.discs.conf.jaxb.lists.InstallationSlotNameList;
-
 /**
  * This resource provides bulk and specific installation slot data.
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
  */
-@Path("slotNames")
+@Path("slotName")
 public interface InstallationSlotNameResource {
     /**
      * @param deviceTypeName the name of the device type to return information for.
-     *
+     * 
      * @return a list of installation slot names that correspond to a requested type, or all if omitted.
      */
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public InstallationSlotNameList getAllInstallationSlotNames(@QueryParam("deviceType") String deviceTypeName);
+    public InstallationSlotNames getAllInstallationSlotNames(@QueryParam("type") String deviceTypeName);
 }

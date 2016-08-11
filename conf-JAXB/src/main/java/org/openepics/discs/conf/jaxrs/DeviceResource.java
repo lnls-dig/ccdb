@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2016 European Spallation Source
- * Copyright (c) 2016 Cosylab d.d.
+ * Copyright (c) 2014 European Spallation Source
+ * Copyright (c) 2014 Cosylab d.d.
  *
  * This file is part of Cable Database.
  * Cable Database is free software: you can redistribute it and/or modify it
@@ -15,54 +15,49 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
  */
-package org.openepics.discs.conf.jaxrs;
+package org.openepics.discs.ccdb.jaxrs;
+
+import java.util.List;
+import javax.ws.rs.DefaultValue;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
-import org.openepics.discs.conf.jaxb.Device;
-import org.openepics.discs.conf.jaxb.lists.DeviceList;
+import org.openepics.discs.ccdb.jaxb.ResDevice;
 
 /**
- * This resource provides bulk and specific device data.
+ * This resource provides bulk and specific device type data.
  *
- * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
+ * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
  */
-@Path("devices")
+@Path("device")
 public interface DeviceResource {
-
-    /** @return returns all devices in the database. */
-    @GET
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public DeviceList getAllDevices();
-
+ 
     /**
-     * Returns a specific device.
-     *
+     * search devices
+     * 
      * @param name
-     *            the name of the device to retrieve
-     * @return the device instance data
+     * @param type
+     * @return 
      */
     @GET
-    @Path("{name}")
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Device getDevice(@PathParam("name") String name);
-
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<ResDevice> searchDevices( 
+        @DefaultValue("") @QueryParam("name") String name, 
+        @DefaultValue("") @QueryParam("type") String type);
+    
     /**
-     * Returns a specific device artifact file.
+     * Returns a specific device type.
      *
-     * @param name
-     *            the name of the device from which to retrieve artifact file.
-     * @param fileName
-     *            the name of the artifact file to retrieve.
-     * @return the device artifact file
+     * @param name the name of the device type to retrieve
+     * @return the device type instance data
      */
     @GET
-    @Path("{name}/download/{fileName}")
-    @Produces({ MediaType.MEDIA_TYPE_WILDCARD })
-    public Response getAttachment(@PathParam("name") String name, @PathParam("fileName") String fileName);
+    @Path("{iid}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public ResDevice getDevice(@PathParam("iid") String name);
 }

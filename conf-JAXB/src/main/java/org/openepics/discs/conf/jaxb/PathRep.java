@@ -17,27 +17,55 @@
  */
 package org.openepics.discs.ccdb.jaxb;
 
-
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * This is data transfer object representing a CCDB device type for JSON and XML serialization.
+ * Representation of a sequence of elements (path)
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
  */
-@XmlRootElement(name = "deviceType")
+@XmlRootElement(name = "path")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DeviceType {
-    private String name;
-    private String description;
+public class PathRep {
+    private String name;  
+    
+    @XmlElement(name = "element")
+    @XmlElementWrapper(name = "elements")
+    private List<ElementRep> elements;
 
-    public DeviceType() { }
+    public PathRep() {
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    /**
+     * From a list of elements
+     * 
+     * @param name
+     * @param elements
+     * 
+     */
+    public PathRep(String name, List<ElementRep> elements) {       
+        this.name = name;
+        this.elements = elements;     
+    }
+    
+    public String getName() {
+        return name;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public List<ElementRep> getElements() {
+        return elements;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setElements(List<ElementRep> elements) {
+        this.elements = elements;
+    }
 }

@@ -26,30 +26,35 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.openepics.discs.ccdb.jaxb.PropertyRep;
 
-import org.openepics.discs.ccdb.jaxb.DeviceType;
 
 /**
- * This resource provides bulk and specific device type data.
+ * Property Resource.
  *
- * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
+ * @author <a href="mailto:vuppala@frib.msu.edu">Vasu Vuppala</a>
  */
-@Path("deviceType")
-public interface DeviceTypeResource {
-    
-    /** @return returns all device types in the database. */
-    @GET
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<DeviceType> searchDeviceTypes(@DefaultValue("") @QueryParam("name") String query);
-
+@Path("property")
+public interface PropertyResource {
     /**
-     * Returns a specific device type.
-     *
-     * @param name the name of the device type to retrieve
-     * @return the device type instance data
+     * Properties
+     * 
+     * @param query query string
+     * @return all properties matching the query
      */
-    @GET
+    @GET    
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<PropertyRep> searchProperties(
+        @DefaultValue("") @QueryParam("name") String query);   
+    
+    /**
+     * A Property
+     * 
+     * @param name property name
+     * @return property
+     */
+    @GET    
     @Path("{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public DeviceType getDeviceType(@PathParam("name") String name);
+    public PropertyRep getProperty(@PathParam("name") String name);
 }

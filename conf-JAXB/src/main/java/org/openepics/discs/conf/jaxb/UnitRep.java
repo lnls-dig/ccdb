@@ -17,27 +17,64 @@
  */
 package org.openepics.discs.ccdb.jaxb;
 
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.openepics.discs.ccdb.model.Property;
+import org.openepics.discs.ccdb.model.Unit;
 
 /**
- * This is data transfer object representing a CCDB device type for JSON and XML serialization.
+ * This is data transfer object representing a CCDB property value for JSON and
+ * XML serialization.
  *
  * @author <a href="mailto:sunil.sah@cosylab.com">Sunil Sah</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovič</a>
  */
-@XmlRootElement(name = "deviceType")
+@XmlRootElement(name = "unit")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DeviceType {
+public class UnitRep {
+
     private String name;
     private String description;
+    private String symbol;
+    
+    private UnitRep() {
+    }
 
-    public DeviceType() { }
+    public static UnitRep newInstance(Unit unit) {
+        UnitRep unitrep = new UnitRep();
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+        unitrep.name = unit.getName();
+        unitrep.description = unit.getDescription();
+        unitrep.symbol = unit.getSymbol();
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+        return unitrep;
+    }
+
+    // getters/setters
+    
+    public String getName() {
+        return name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+
 }
